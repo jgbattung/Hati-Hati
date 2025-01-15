@@ -4,10 +4,21 @@ interface ICreateUserData {
   id: string,
   email: string,
   name?: string | null,
-  image?: NamedCurve,
+  image?: string | null,
 }
 
-export async function createOrUpdateUserDB (userData: ICreateUserData) {
+export async function doesuserExist(id: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id }
+    })
+    return !!user
+  } catch (error) {
+    handleDatabaseError(error)
+  }
+}
+
+export async function updateUserDB (userData: ICreateUserData) {
   try {
     return await prisma.user.upsert({
       where: { id: userData.id },

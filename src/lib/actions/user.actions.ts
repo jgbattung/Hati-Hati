@@ -1,18 +1,19 @@
-import { currentUser } from "@clerk/nextjs/server"
-import { createOrUpdateUserDB } from "../db/users.db";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use server'
 
-export async function syncUserWithClerk() {
+import { updateUserDB } from "../db/users.db";
+
+interface userDataParams {
+  id: string,
+  email: string,
+  name?: string | null,
+  image?: string | null,
+}
+
+export async function updateUser(userData: userDataParams) {
   try {
-    const user = await currentUser();
-    if (!user) throw new Error("Unauthorized");
-
-    return await createOrUpdateUserDB({
-      id: user.id,
-      email: user.emailAddresses[0].emailAddress,
-      name: user.firstName ? `${user.firstName} ${user.lastName}` : null,
-      image: user.imageUrl,
-    })
-  } catch (error) {
-    throw new Error(`Error syncing user: ${error}`)
+    return await updateUserDB(userData)
+  } catch (error: any) {
+    throw new Error(`Failed to save user: ${error.message}`);
   }
-};
+}
