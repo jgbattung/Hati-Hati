@@ -1,4 +1,5 @@
-import { doesuserExist, updateUserDB } from '@/lib/db/users.db';
+import { updateUser } from '@/lib/actions/user.actions';
+import { doesuserExist } from '@/lib/db/users.db';
 import { currentUser } from '@clerk/nextjs/server'
 import React from 'react'
 
@@ -10,7 +11,7 @@ const Groups = async () => {
 
     if (!userExists) {
       try {
-        await updateUserDB({
+        await updateUser({
           id: user.id,
           email: user.emailAddresses[0].emailAddress,
           name: user.firstName ? `${user.firstName}` : null,
