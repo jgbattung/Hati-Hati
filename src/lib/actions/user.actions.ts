@@ -3,7 +3,7 @@
 
 import { updateUserDB } from "../db/users.db";
 
-interface userDataParams {
+export interface userDataParams {
   id: string,
   email: string,
   name?: string | null,
