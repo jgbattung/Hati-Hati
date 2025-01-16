@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id String
+  id String @unique
   name String?
   email String @unique
   image String?
