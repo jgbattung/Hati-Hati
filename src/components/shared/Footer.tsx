@@ -1,6 +1,7 @@
 "use client"
 
 import { footerRoutes } from '@/constants'
+import { footerTestIds } from '@/utils/constants'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
@@ -9,7 +10,10 @@ const Footer = () => {
   const currentPathname = usePathname();
 
   return (
-    <div className='fixed bottom-0 w-full bg-gray-800 border-t-2 border-gray-500 p-4'>
+    <section
+      data-testid={footerTestIds.footer}
+      className='fixed bottom-0 w-full bg-gray-800 border-t-2 border-gray-500 p-4'
+    >
       <div className='flex items-center justify-around gap-3'>
         {footerRoutes.map((route) => {
           const isActive = (currentPathname.includes(route.route) && route.route.length > 1) || currentPathname === route.route
@@ -22,6 +26,7 @@ const Footer = () => {
               className={`flex flex-col items-center justify-center gap-2 ${isActive ? 'text-teal-600' : 'text-gray-300 hover:text-teal-600'}`}
             >
               <Icon 
+                data-testid={`icon-${route.iconId}`}
                 size={20}
               />
               <p className='text-xs'>{route.text}</p>
@@ -29,7 +34,7 @@ const Footer = () => {
           )
         })}
       </div>
-    </div>
+    </section>
   )
 }
 
