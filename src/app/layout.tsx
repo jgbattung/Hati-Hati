@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import Footer from "@/components/shared/Footer";
 
 export const metadata: Metadata = {
   title: "Hati-Hati",
@@ -17,8 +18,11 @@ export default function RootLayout({
       afterSignOutUrl="sign-in"
     >
       <html lang="en">
-        <body>
-          {children}
+        <body className="bg-gray-800">
+          <main>
+            {children}
+          </main>
+          <Footer />
         </body>
       </html>
     </ClerkProvider>
