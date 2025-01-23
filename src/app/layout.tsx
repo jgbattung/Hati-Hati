@@ -18,7 +18,7 @@ export default function RootLayout({
       afterSignOutUrl="sign-in"
     >
       <html lang="en">
-        <body className="bg-gray-800">
+        <body className="bg-gray-800 text-white">
           <main>
             {children}
           </main>
