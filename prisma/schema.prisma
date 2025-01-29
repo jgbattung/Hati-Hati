@@ -23,6 +23,8 @@ model User {
   
   friends Friend[] @relation("UserFriends")
   friendsOf Friend[] @relation("FriendsOfUser")
+
+  sentInvites Invitation[] @relation("SentInvites")
 }
 
 model Friend {
@@ -37,4 +39,25 @@ model Friend {
   @@unique([userId, friendId])
   @@index([userId])
   @@index([friendId])
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+}
+
+model Invitation {
+  id String @id @default(cuid())
+  email String
+  invitedBy String
+  token String @unique
+  status InvitationStatus @default(PENDING)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  sender User @relation("SentInvites", fields: [invitedBy], references: [id], onDelete: Cascade)
+
+  @@index([email])
+  @@index([token])
 }
