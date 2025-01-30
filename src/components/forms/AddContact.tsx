@@ -8,8 +8,14 @@ import { Input } from "../ui/input"
 import { z } from "zod";
 import { ContactValidation } from "@/lib/validations/contact"
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form"
+import { useUser } from "@clerk/nextjs"
+import { addFriend } from "@/lib/actions/user.actions"
+import { useState } from "react"
 
 const AddContact = () => {
+  const { user } = useUser();
+  const [open, setOpen] = useState(false);
+
   const form = useForm<z.infer<typeof ContactValidation>>({
     resolver: zodResolver(ContactValidation),
     defaultValues: {
@@ -18,12 +24,31 @@ const AddContact = () => {
     },
   })
 
-  const onSubmit = async () => {
-    console.log("SUBMIT")
+  const onSubmit = async (values: z.infer<typeof ContactValidation>) => {
+    try {
+      if (!user?.id) return;
+
+      const result = await addFriend({
+        email: values.email,
+        name: values.name,
+        currentUserId: user.id,
+        currentUserName: user.firstName!,
+      });
+
+      if(result) console.log('EMAIL SENT')
+
+      if (!result.error) {
+        setOpen(false)
+        form.reset();
+      }
+
+    } catch (error) {
+      console.error("Error adding friend: ", error)
+    }
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>Add new friend</Button>
       </DialogTrigger>
@@ -70,10 +95,10 @@ const AddContact = () => {
               <Button
                 type="submit"
               >
-                Cancel
+                Add new contact
               </Button>
               <Button>
-                Add new contact
+                Cancel
               </Button>
             </div>
           </form>
