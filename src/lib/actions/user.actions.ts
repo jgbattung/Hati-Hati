@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use server'
 
+import InvitationEmail from "@/components/emails/InvitationEmail";
 import { prisma } from "../db/prisma";
 import { updateUserDB } from "../db/users.db";
 import crypto from 'crypto';
 import { add } from 'date-fns';
+import { Resend } from 'resend';
 
 function generateInviteToken(): string {
   return crypto.randomBytes(32).toString('hex');
@@ -29,9 +31,12 @@ export interface addFriendsParams {
   email: string,
   currentUserId: string,
   name: string,
+  currentUserName: string,
 }
 
-export async function addFriend({ email, currentUserId, name }: addFriendsParams) {
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export async function addFriend({ email, currentUserId, name, currentUserName }: addFriendsParams) {
   try {
     // check if user with the email exists
     const userToAdd = await prisma.user.findUnique({
@@ -94,6 +99,36 @@ export async function addFriend({ email, currentUserId, name }: addFriendsParams
       }
     });
 
+    const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/invite/accept/${invitation.token}`
+
+    try {
+      const { error } = await resend.emails.send({
+        from: 'Hati-Hati <onboarding@resend.dev>',
+        to: [email],
+        subject: `${currentUserName} invited you to join Hati-Hati`,
+        react: InvitationEmail({
+          inviteeName: name,
+          inviterName: currentUserName,
+          inviteLink
+        })
+      });
+
+      if (error) {
+        console.error('Failed to send email: ', error);
+        // If email fails, delete the invitation
+        await prisma.invitation.delete({
+          where: { id: invitation.id }
+        });
+        throw new Error('Failed to send invitation email');
+      }
+    } catch (emailError) {
+      console.error('Email service error: ', emailError);
+      // Delete the invitation if email fails
+      await prisma.invitation.delete({
+        where: { id: invitation.id }
+      });
+      throw new Error('Failed to send invitation email');
+    }
 
     return {
       success: true,
