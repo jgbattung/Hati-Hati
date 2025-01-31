@@ -24,6 +24,11 @@ const AddContact = () => {
     },
   })
 
+  const handleCancel = () => {
+    setOpen(false);
+    form.reset()
+  }
+
   const onSubmit = async (values: z.infer<typeof ContactValidation>) => {
     try {
       if (!user?.id) return;
@@ -53,7 +58,7 @@ const AddContact = () => {
         <Button>Add new friend</Button>
       </DialogTrigger>
       <DialogContent
-        className="max-sm:max-w-72 rounded-md border-2 border-zinc-600"
+        className="max-sm:max-w-72 rounded-md border-2 border-zinc-600 [&>button:last-child]:hidden"
       >
         <DialogHeader>
           <DialogTitle>Add a new contact</DialogTitle>
@@ -95,7 +100,7 @@ const AddContact = () => {
                 </FormItem>
               )}
             />
-            <div className="mt-4 flex flex-col gap-2">
+            <div className="mt-6 flex flex-col gap-2">
               <Button
                 type="submit"
                 className="px-2 py-1 rounded-md bg-violet-700 hover:bg-violet-800 text-zinc-50 font-medium transition-colors"
@@ -103,6 +108,8 @@ const AddContact = () => {
                 Add new contact
               </Button>
               <Button
+                type="button"
+                onClick={handleCancel}
                 className="px-2 py-1 rounded-md border-2 border-zinc-700 text-zinc-300 hover:bg-zinc-800 transition-colors"
               >
                 Cancel
