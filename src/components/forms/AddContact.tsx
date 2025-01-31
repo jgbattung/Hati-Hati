@@ -10,11 +10,14 @@ import { ContactValidation } from "@/lib/validations/contact"
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form"
 import { useUser } from "@clerk/nextjs"
 import { addFriend } from "@/lib/actions/user.actions"
-import { useState } from "react"
+import { useCallback, useState } from "react"
+import ContactSuccessMessage from "./form-success/ContactSuccessMessage"
 
 const AddContact = () => {
   const { user } = useUser();
   const [open, setOpen] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const form = useForm<z.infer<typeof ContactValidation>>({
     resolver: zodResolver(ContactValidation),
@@ -22,11 +25,20 @@ const AddContact = () => {
       name: "",
       email: "",
     },
-  })
+  });
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    setTimeout(() => {
+      setShowSuccess(false);
+      setSuccessMessage("");
+      form.reset();
+    }, 300)
+  }, [form]);
 
   const handleCancel = () => {
     setOpen(false);
-    form.reset()
+    form.reset();
   }
 
   const onSubmit = async (values: z.infer<typeof ContactValidation>) => {
@@ -42,11 +54,16 @@ const AddContact = () => {
 
       if(result) console.log('EMAIL SENT')
 
-      if (!result.error) {
-        setOpen(false)
-        form.reset();
-      }
+      if (!result.error && result.success) {
+        if (result.isExistingUser && result.user) {
+          setSuccessMessage(`Added ${result.user.name} as a friend succesfully`);
+        }
+        setShowSuccess(true);
 
+        const timeoutId = setTimeout(handleClose, 8000);
+
+        return () => clearTimeout(timeoutId)
+      }
     } catch (error) {
       console.error("Error adding friend: ", error)
     }
@@ -57,67 +74,71 @@ const AddContact = () => {
       <DialogTrigger asChild>
         <Button>Add new friend</Button>
       </DialogTrigger>
-      <DialogContent
-        className="max-sm:max-w-72 rounded-md border-2 border-zinc-600 [&>button:last-child]:hidden"
-      >
-        <DialogHeader>
-          <DialogTitle>Add a new contact</DialogTitle>
-          <DialogDescription
-            className="text-zinc-400 text-xs"
-          >
-            {`Add a new contact to Hati-Hati to add them to your groups.`}
-          </DialogDescription>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem className="flex flex-col items-start justify-center">
-                  <FormLabel className="text-xs">Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      className="text-xs rounded-md"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem className="flex flex-col items-start justify-center mt-3">
-                  <FormLabel className="text-xs">Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      className="text-xs rounded-md"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <div className="mt-6 flex flex-col gap-2">
-              <Button
-                type="submit"
-                className="px-2 py-1 rounded-md bg-violet-700 hover:bg-violet-800 text-zinc-50 font-medium transition-colors"
-              >
-                Add new contact
-              </Button>
-              <Button
-                type="button"
-                onClick={handleCancel}
-                className="px-2 py-1 rounded-md border-2 border-zinc-700 text-zinc-300 hover:bg-zinc-800 transition-colors"
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </DialogContent>
+      {showSuccess ? (
+        <ContactSuccessMessage message={successMessage} onClose={handleClose} />
+      ) : (
+        <DialogContent
+          className="max-sm:max-w-72 rounded-md border-2 border-zinc-600 [&>button:last-child]:hidden"
+        >
+          <DialogHeader>
+            <DialogTitle>Add a new contact</DialogTitle>
+            <DialogDescription
+              className="text-zinc-400 text-xs"
+            >
+              {`Add a new contact to Hati-Hati to add them to your groups.`}
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col items-start justify-center">
+                    <FormLabel className="text-xs">Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        className="text-xs rounded-md"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col items-start justify-center mt-3">
+                    <FormLabel className="text-xs">Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        className="text-xs rounded-md"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <div className="mt-6 flex flex-col gap-2">
+                <Button
+                  type="submit"
+                  className="px-2 py-1 rounded-md bg-violet-700 hover:bg-violet-800 text-zinc-50 font-medium transition-colors"
+                >
+                  Add new contact
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleCancel}
+                  className="px-2 py-1 rounded-md border-2 border-zinc-700 text-zinc-300 hover:bg-zinc-800 transition-colors"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      )}
     </Dialog>
   )
 }
