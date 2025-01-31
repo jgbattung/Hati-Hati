@@ -52,11 +52,15 @@ const AddContact = () => {
       <DialogTrigger asChild>
         <Button>Add new friend</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent
+        className="max-sm:max-w-72 rounded-md border-2 border-zinc-600"
+      >
         <DialogHeader>
           <DialogTitle>Add a new contact</DialogTitle>
-          <DialogDescription>
-            {`Add a new contact to Hati-hati and add them to your groups.`}
+          <DialogDescription
+            className="text-zinc-400 text-xs"
+          >
+            {`Add a new contact to Hati-Hati to add them to your groups.`}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -65,12 +69,12 @@ const AddContact = () => {
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem className="grid grid-cols-4 items-center gap-4">
-                  <FormLabel className="text-right">Name</FormLabel>
+                <FormItem className="flex flex-col items-start justify-center">
+                  <FormLabel className="text-xs">Name</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      className="col-span-3"
+                      className="text-xs rounded-md"
                     />
                   </FormControl>
                 </FormItem>
@@ -80,24 +84,27 @@ const AddContact = () => {
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormItem className="grid grid-cols-4 items-center gap-4">
-                  <FormLabel className="text-right">Email</FormLabel>
+                <FormItem className="flex flex-col items-start justify-center mt-3">
+                  <FormLabel className="text-xs">Email</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      className="col-span-3"
+                      className="text-xs rounded-md"
                     />
                   </FormControl>
                 </FormItem>
               )}
             />
-            <div className="flex flex-col gap-4">
+            <div className="mt-4 flex flex-col gap-2">
               <Button
                 type="submit"
+                className="px-2 py-1 rounded-md bg-violet-700 hover:bg-violet-800 text-zinc-50 font-medium transition-colors"
               >
                 Add new contact
               </Button>
-              <Button>
+              <Button
+                className="px-2 py-1 rounded-md border-2 border-zinc-700 text-zinc-300 hover:bg-zinc-800 transition-colors"
+              >
                 Cancel
               </Button>
             </div>
