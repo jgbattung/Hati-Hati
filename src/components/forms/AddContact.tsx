@@ -56,11 +56,16 @@ const AddContact = () => {
 
       if (!result.error && result.success) {
         if (result.isExistingUser && result.user) {
-          setSuccessMessage(`Added ${result.user.name} as a friend succesfully`);
+          setSuccessMessage(`${result.user.name} has been added to your friends list.`);
         }
+
+        if (!result.isExistingUser && result.invitation) {
+          setSuccessMessage(`Invitation email has been sent to ${result.invitation.name}. They will automatically be added to your friends list when they sign up.`)
+        }
+
         setShowSuccess(true);
 
-        const timeoutId = setTimeout(handleClose, 8000);
+        const timeoutId = setTimeout(handleClose, 10000);
 
         return () => clearTimeout(timeoutId)
       }
