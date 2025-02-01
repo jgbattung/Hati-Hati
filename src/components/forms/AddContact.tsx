@@ -12,12 +12,16 @@ import { useUser } from "@clerk/nextjs"
 import { addFriend } from "@/lib/actions/user.actions"
 import { useCallback, useState } from "react"
 import ContactSuccessMessage from "./form-success/ContactSuccessMessage"
+import { ERROR_MESSAGES, FRIEND_ERRORS } from "@/lib/errors"
+import ContactErrorMessage from "./form-error/ContactErrorMessage"
 
 const AddContact = () => {
   const { user } = useUser();
   const [open, setOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const form = useForm<z.infer<typeof ContactValidation>>({
     resolver: zodResolver(ContactValidation),
@@ -69,6 +73,11 @@ const AddContact = () => {
 
         return () => clearTimeout(timeoutId)
       }
+
+      if (result.error) {
+        setErrorMessage(ERROR_MESSAGES[result.error] || ERROR_MESSAGES[FRIEND_ERRORS.GENERAL_ERROR]);
+        setShowError(true);
+      }
     } catch (error) {
       console.error("Error adding friend: ", error)
     }
@@ -81,6 +90,8 @@ const AddContact = () => {
       </DialogTrigger>
       {showSuccess ? (
         <ContactSuccessMessage message={successMessage} onClose={handleClose} />
+      ) : showError ? (
+        <ContactErrorMessage message={errorMessage} onClose={handleClose} />
       ) : (
         <DialogContent
           className="max-sm:max-w-72 rounded-md border-2 border-zinc-600 [&>button:last-child]:hidden"
