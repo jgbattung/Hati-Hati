@@ -7,6 +7,7 @@ import { updateUserDB } from "../db/users.db";
 import crypto from 'crypto';
 import { add } from 'date-fns';
 import { Resend } from 'resend';
+import { FRIEND_ERRORS } from "../errors";
 
 function generateInviteToken(): string {
   return crypto.randomBytes(32).toString('hex');
@@ -53,7 +54,7 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
       })
 
       if (existingFriendship) {
-        return { error: "Already friends with this user"}
+        return { error: FRIEND_ERRORS.ALREADY_FRIENDS}
       }
 
       // create new friendship
@@ -83,7 +84,7 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
     });
 
     if (existingInvitation) {
-      return { error: "An invitation has already been sent to this email" }
+      return { error: FRIEND_ERRORS.PENDING_INVITATION }
     }
 
     // Create a new invitation
@@ -119,7 +120,7 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
         await prisma.invitation.delete({
           where: { id: invitation.id }
         });
-        throw new Error('Failed to send invitation email');
+        return { error: FRIEND_ERRORS.EMAIL_SEND_FAILED }
       }
     } catch (emailError) {
       console.error('Email service error: ', emailError);
@@ -127,7 +128,7 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
       await prisma.invitation.delete({
         where: { id: invitation.id }
       });
-      throw new Error('Failed to send invitation email');
+      return { error: FRIEND_ERRORS.EMAIL_SEND_FAILED }
     }
 
     return {
@@ -141,6 +142,6 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
     }
   } catch (error) {
     console.error("Failed to add friend: ", error)
-    throw new Error("Failed to add friend");
+    return { error: FRIEND_ERRORS.GENERAL_ERROR };
   }
 } 
