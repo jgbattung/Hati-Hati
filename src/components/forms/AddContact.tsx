@@ -7,13 +7,14 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from "../ui/input"
 import { z } from "zod";
 import { ContactValidation } from "@/lib/validations/contact"
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import { useUser } from "@clerk/nextjs"
 import { addFriend } from "@/lib/actions/user.actions"
 import { useCallback, useState } from "react"
 import ContactSuccessMessage from "./form-success/ContactSuccessMessage"
 import { ERROR_MESSAGES, FRIEND_ERRORS } from "@/lib/errors"
 import ContactErrorMessage from "./form-error/ContactErrorMessage"
+import { addContactTestIds } from "@/utils/constants"
 
 const AddContact = () => {
   const { user } = useUser();
@@ -86,7 +87,7 @@ const AddContact = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Add new friend</Button>
+        <Button data-testid={addContactTestIds.addNewFriendButton}>Add new friend</Button>
       </DialogTrigger>
       {showSuccess ? (
         <ContactSuccessMessage message={successMessage} onClose={handleClose} />
@@ -94,11 +95,13 @@ const AddContact = () => {
         <ContactErrorMessage message={errorMessage} onClose={handleClose} />
       ) : (
         <DialogContent
+          data-testid={addContactTestIds.addContactDialog}
           className="max-sm:max-w-72 rounded-md border-2 border-zinc-600 [&>button:last-child]:hidden"
         >
           <DialogHeader>
-            <DialogTitle>Add a new contact</DialogTitle>
+            <DialogTitle data-testid={addContactTestIds.dialogTitle}>Add a new contact</DialogTitle>
             <DialogDescription
+              data-testid={addContactTestIds.dialogDescription}
               className="text-zinc-400 text-xs"
             >
               {`Add a new contact to Hati-Hati to add them to your groups.`}
@@ -118,7 +121,7 @@ const AddContact = () => {
                         className="text-xs rounded-md"
                       />
                     </FormControl>
-                    <FormMessage className="text-xs text-rose-500" />
+                    <FormMessage data-testid={addContactTestIds.nameMessage} className="text-xs text-rose-500" />
                   </FormItem>
                 )}
               />
@@ -134,18 +137,20 @@ const AddContact = () => {
                         className="text-xs rounded-md"
                       />
                     </FormControl>
-                    <FormMessage className="text-xs text-rose-500" />
+                    <FormMessage data-testid={addContactTestIds.emailMessage} className="text-xs text-rose-500" />
                   </FormItem>
                 )}
               />
               <div className="mt-6 flex flex-col gap-2">
                 <Button
+                  data-testid={addContactTestIds.submitButton}
                   type="submit"
                   className="px-2 py-1 rounded-md bg-violet-700 hover:bg-violet-800 text-zinc-50 font-medium transition-colors"
                 >
                   Add new contact
                 </Button>
                 <Button
+                  data-testid={addContactTestIds.cancelButton}
                   type="button"
                   onClick={handleCancel}
                   className="px-2 py-1 rounded-md border-2 border-zinc-700 text-zinc-300 hover:bg-zinc-800 transition-colors"
