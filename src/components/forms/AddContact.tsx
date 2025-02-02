@@ -118,6 +118,7 @@ const AddContact = () => {
                         className="text-xs rounded-md"
                       />
                     </FormControl>
+                    <FormMessage className="text-xs text-rose-500" />
                   </FormItem>
                 )}
               />
@@ -133,6 +134,7 @@ const AddContact = () => {
                         className="text-xs rounded-md"
                       />
                     </FormControl>
+                    <FormMessage className="text-xs text-rose-500" />
                   </FormItem>
                 )}
               />
