@@ -35,10 +35,11 @@ export interface addFriendsParams {
   currentUserName: string,
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function addFriend({ email, currentUserId, name, currentUserName }: addFriendsParams) {
   try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
     // check if user with the email exists
     const userToAdd = await prisma.user.findUnique({
       where: { email }
