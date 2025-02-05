@@ -12,4 +12,5 @@ export const addContactTestIds = {
   nameMessage: "name-message",
   emailMessage: "email-message",
   successDialog: "success-dialog",
+  errorDialog: "error-dialog",
 }

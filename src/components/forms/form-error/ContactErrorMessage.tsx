@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { DialogContent } from "@/components/ui/dialog";
+import { addContactTestIds } from "@/utils/constants";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { CircleX } from "lucide-react";
 
@@ -11,8 +12,9 @@ interface ContactErrorMessageProps {
 const ContactErrorMessage = ({ message, onClose }: ContactErrorMessageProps) => {
   return (
     <DialogContent
-    className="flex flex-col items-center justify-center max-sm:max-w-72 rounded-md border-2 border-zinc-600 [&>button:last-child]:hidden"
-  >
+      data-testid={addContactTestIds.errorDialog}
+      className="flex flex-col items-center justify-center max-sm:max-w-72 rounded-md border-2 border-zinc-600 [&>button:last-child]:hidden"
+    >
     <CircleX
       size={60}
       color="#f43f5e"

@@ -120,5 +120,120 @@ describe("Add Contact success scenarios tests", () => {
       currentUserId: mockUser.id,
       currentUserName: mockUser.firstName,
     });
-  })
+  });
+});
+
+describe("Add Contact error scenarios tests", () => {
+  it('should show correct error message when adding an existing friend', async () => {
+    const mockAlreadyFriends = {
+      error: 'ALREADY_FRIENDS',
+      success: false,
+    };
+    (addFriend as jest.Mock).mockResolvedValue(mockAlreadyFriends);
+
+    const user = userEvent.setup();
+    renderAddContact();
+
+    // Click the add new friend button
+    await user.click(screen.getByTestId(addContactTestIds.addNewFriendButton));
+
+    const nameField = screen.getByLabelText('Name');
+    const emailField = screen.getByLabelText('Email');
+
+    // Fill up the form
+    await user.type(nameField, 'Existing Friend');
+    await user.type(emailField, 'existing@example.com');
+
+    // Submit the form
+    await user.click(screen.getByTestId(addContactTestIds.submitButton));
+
+    await waitFor(() => {
+      expect(screen.getByTestId(addContactTestIds.errorDialog)).toBeInTheDocument();
+      expect(screen.getByText('This user is already on your friends list.')).toBeInTheDocument();
+    });
+  });
+
+  it('should show correct error message when there is already a pending invitation', async () => {
+    const mockPendingInvitation = {
+      error: 'PENDING_INVITATION',
+      success: false,
+    };
+    (addFriend as jest.Mock).mockResolvedValue(mockPendingInvitation);
+
+    const user = userEvent.setup();
+    renderAddContact();
+
+    // Click the add new friend button
+    await user.click(screen.getByTestId(addContactTestIds.addNewFriendButton));
+
+    const nameField = screen.getByLabelText('Name');
+    const emailField = screen.getByLabelText('Email');
+
+    // Fill up the form
+    await user.type(nameField, 'Pending User');
+    await user.type(emailField, 'pending@example.com');
+
+    // Submit the form
+    await user.click(screen.getByTestId(addContactTestIds.submitButton));
+
+    await waitFor(() => {
+      expect(screen.getByTestId(addContactTestIds.errorDialog)).toBeInTheDocument();
+      expect(screen.getByText('You have already sent an invitation to this user.'))
+    });
+  });
+
+  it('should show correct error message when email sending fails', async () => {
+    const mockEmailFailed = {
+      error: 'EMAIL_SEND_FAILED',
+      success: false
+    };
+    (addFriend as jest.Mock).mockResolvedValue(mockEmailFailed);
+
+    const user = userEvent.setup();
+    renderAddContact();
+
+    // Click the add new friend button
+    await user.click(screen.getByTestId(addContactTestIds.addNewFriendButton));
+
+    const nameField = screen.getByLabelText('Name');
+    const emailField = screen.getByLabelText('Email');
+
+    // Fill up the form
+    await user.type(nameField, 'New User');
+    await user.type(emailField, 'new@example.com');
+
+    // Submit the form
+    await user.click(screen.getByTestId(addContactTestIds.submitButton));
+
+    await waitFor(() => {
+      expect(screen.getByTestId(addContactTestIds.errorDialog)).toBeInTheDocument();
+      expect(screen.getByText('Failed to send invitation email. Please try again.')).toBeInTheDocument();
+    });
+  });
+
+  it('should show general error message for unexpected errors', async () => {
+    const mockGeneralError = {
+      error: 'GENERAL_ERROR',
+      success: false
+    };
+    (addFriend as jest.Mock).mockResolvedValue(mockGeneralError);
+
+    const user = userEvent.setup();
+    renderAddContact();
+
+    await user.click(screen.getByTestId(addContactTestIds.addNewFriendButton));
+    
+    const nameField = screen.getByLabelText('Name');
+    const emailField = screen.getByLabelText('Email');
+
+    await user.type(nameField, 'Test User');
+    await user.type(emailField, 'test@example.com');
+
+    await user.click(screen.getByTestId(addContactTestIds.submitButton));
+
+    await waitFor(() => {
+      expect(screen.getByTestId(addContactTestIds.errorDialog)).toBeInTheDocument();
+      expect(screen.getByText('Something went wrong. Please try again.')).toBeInTheDocument();
+    });
+  });
 });
