@@ -12,6 +12,8 @@ jobs:
     env:
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:  ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
       CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+      NEXT_PUBLIC_APP_URL: 'https://test-app.com'
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       NEXT_PUBLIC_CLERK_SIGN_IN_URL: '/sign-in'
       NEXT_PUBLIC_CLERK_SIGN_UP_URL: '/sign-up'
       NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: '/'
@@ -54,3 +56,6 @@ jobs:
         
       - name: Run unit tests
         run: npm run test:unit
+
+      - name: Run integration tests
+        run: npm run test:integration
