@@ -11,4 +11,5 @@ export const addContactTestIds = {
   cancelButton: "cancel-button",
   nameMessage: "name-message",
   emailMessage: "email-message",
+  successDialog: "success-dialog",
 }
