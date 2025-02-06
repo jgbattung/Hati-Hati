@@ -4,6 +4,7 @@ import { currentUser } from '@clerk/nextjs/server'
 import { getUserFriends } from '@/lib/actions/user.actions'
 import { redirect } from 'next/navigation';
 import Image from 'next/image';
+import { friendsPageTestIds } from '@/utils/constants';
 
 const Friends = async () => {
   const user = await currentUser();
@@ -11,7 +12,10 @@ const Friends = async () => {
   const userFriends = await getUserFriends(user.id)
   
   return (
-    <div className='flex flex-col items-center justify-center gap-4'>
+    <div
+      data-testid={friendsPageTestIds.friendsPage}
+      className='flex flex-col items-center justify-center gap-4'
+    >
       <div className='w-full px-5 mt-10'>
         {!userFriends ? (
           <div className='flex text-zinc-400 items-center justify-center my-10'>
@@ -20,6 +24,7 @@ const Friends = async () => {
         ) : (
           userFriends?.map((friends) => (
             <div
+              data-testid={friendsPageTestIds.friendsDiv}
               key={friends.friend.id}
               className='flex items-center justify-between my-3'
             >
