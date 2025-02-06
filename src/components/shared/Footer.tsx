@@ -23,7 +23,7 @@ const Footer = () => {
             <Link
               href={route.route}
               key={route.text}
-              className={`flex flex-col items-center justify-center gap-2 ${isActive ? 'text-emerald-600' : 'text-zinc-50 hover:text-emerald-600'}`}
+              className={`flex flex-col items-center justify-center gap-2 ${isActive ? 'text-teal-600' : 'text-zinc-50 hover:text-teal-600'}`}
             >
               <Icon 
                 data-testid={`icon-${route.iconId}`}

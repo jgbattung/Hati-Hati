@@ -14,3 +14,8 @@ export const addContactTestIds = {
   successDialog: "success-dialog",
   errorDialog: "error-dialog",
 }
+
+export const friendsPageTestIds = {
+  friendsPage: "friends-page",
+  friendsDiv: "friends-div",
+}

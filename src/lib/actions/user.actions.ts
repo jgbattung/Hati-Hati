@@ -145,4 +145,25 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
     console.error("Failed to add friend: ", error)
     return { error: FRIEND_ERRORS.GENERAL_ERROR };
   }
-} 
+};
+
+export async function getUserFriends(currentUserId: string) {
+  try {
+    const friends = prisma.friend.findMany({
+      where: { userId: currentUserId },
+      select: {
+        friend: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          }
+        }
+      }
+    });
+
+    return friends;
+  } catch (error) {
+    console.error("Failed to get user's friends: ", error)
+  }
+}

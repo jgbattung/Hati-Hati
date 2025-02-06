@@ -15,6 +15,7 @@ import ContactSuccessMessage from "./form-success/ContactSuccessMessage"
 import { ERROR_MESSAGES, FRIEND_ERRORS } from "@/lib/errors"
 import ContactErrorMessage from "./form-error/ContactErrorMessage"
 import { addContactTestIds } from "@/utils/constants"
+import { UserRoundPlus } from "lucide-react"
 
 const AddContact = () => {
   const { user } = useUser();
@@ -87,7 +88,13 @@ const AddContact = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button data-testid={addContactTestIds.addNewFriendButton}>Add new friend</Button>
+        <Button
+          data-testid={addContactTestIds.addNewFriendButton}
+          className="flex items-center justify-center gap-3 border border-teal-500 text-teal-500  hover:bg-teal-500/10 transition-colors"
+        >
+          <UserRoundPlus />
+          Add more friends
+        </Button>
       </DialogTrigger>
       {showSuccess ? (
         <ContactSuccessMessage message={successMessage} onClose={handleClose} />

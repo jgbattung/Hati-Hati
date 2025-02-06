@@ -13,7 +13,15 @@ const config: Config = {
   testMatch: [
     '<rootDir>/src/__tests__/**/*.test.{js,jsx,ts,tsx}'
   ],
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts']
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  transform: {
+    '^.+\\.(ts|tsx)$': ['ts-jest', {
+      tsconfig: 'tsconfig.json'
+    }]
+  },
+  transformIgnorePatterns: [
+    'node_modules/(?!(@clerk/clerk-react|@clerk/shared|@clerk/types|@clerk/backend|@clerk/nextjs)/)'
+  ],
 }
 
 export default createJestConfig(config)
