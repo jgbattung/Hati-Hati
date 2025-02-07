@@ -1,5 +1,6 @@
 import { updateUser } from '@/lib/actions/user.actions';
 import { doesuserExist } from '@/lib/db/users.db';
+import { SignOutButton } from '@clerk/nextjs';
 import { currentUser } from '@clerk/nextjs/server'
 import React from 'react'
 
@@ -14,7 +15,10 @@ const Groups = async () => {
         await updateUser({
           id: user.id,
           email: user.emailAddresses[0].emailAddress,
-          name: user.firstName ? `${user.firstName}` : null,
+          name: user.firstName && user.lastName
+          ? `${user.firstName} ${user.lastName}`
+          : user.firstName
+          || null,
           image: user.imageUrl,
         })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,7 +31,8 @@ const Groups = async () => {
   return (
     <div>
       <p>Groups</p>
-      <p>{`Hello, ${user?.firstName}`}</p>
+      <p>{`Hello, ${user?.firstName} ${user?.lastName}`}</p>
+      <SignOutButton />
     </div>
   )
 }

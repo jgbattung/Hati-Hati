@@ -17,7 +17,7 @@ const Friends = async () => {
       className='flex flex-col items-center justify-center gap-4'
     >
       <div className='w-full px-5 mt-10'>
-        {!userFriends ? (
+        {!userFriends || userFriends?.length === 0 ? (
           <div className='flex text-zinc-400 items-center justify-center my-10'>
             <p>You have no friends yet.</p>
           </div>
@@ -36,7 +36,7 @@ const Friends = async () => {
                   height={28}
                   className='rounded-full'
                 />
-                <p>{friends.friend.name}</p>
+                <p>{friends.displayName}</p>
               </div>
               <div>
                 <p className='text-xs font-light text-zinc-400'>no expenses</p>
