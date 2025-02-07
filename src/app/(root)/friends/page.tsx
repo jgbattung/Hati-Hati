@@ -36,7 +36,7 @@ const Friends = async () => {
                   height={28}
                   className='rounded-full'
                 />
-                <p>{friends.friend.name}</p>
+                <p>{friends.displayName}</p>
               </div>
               <div>
                 <p className='text-xs font-light text-zinc-400'>no expenses</p>

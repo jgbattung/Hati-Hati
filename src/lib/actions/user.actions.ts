@@ -8,6 +8,7 @@ import crypto from 'crypto';
 import { add } from 'date-fns';
 import { Resend } from 'resend';
 import { FRIEND_ERRORS } from "../errors";
+import { revalidatePath } from "next/cache";
 
 function generateInviteToken(): string {
   return crypto.randomBytes(32).toString('hex');
@@ -63,8 +64,11 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
         data: {
           userId: currentUserId,
           friendId: userToAdd.id,
+          displayName: name,
         }
       })
+
+      revalidatePath('/friends')
 
       return {
         success: true,
@@ -152,6 +156,7 @@ export async function getUserFriends(currentUserId: string) {
     const friends = prisma.friend.findMany({
       where: { userId: currentUserId },
       select: {
+        displayName: true,
         friend: {
           select: {
             id: true,
