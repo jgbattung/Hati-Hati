@@ -48,10 +48,13 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
 
     // if user exists, create friend relationship
     if (userToAdd) {
+      // check if friendship already exists
       const existingFriendship = await prisma.friend.findFirst({
         where: {
-          userId: currentUserId,
-          friendId: userToAdd.id,
+          OR: [
+            { userId: currentUserId, friendId: userToAdd.id },
+            { userId: userToAdd.id, friendId: currentUserId }
+          ]
         }
       })
 
@@ -59,13 +62,27 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
         return { error: FRIEND_ERRORS.ALREADY_FRIENDS}
       }
 
-      // create new friendship
-      await prisma.friend.create({
-        data: {
-          userId: currentUserId,
-          friendId: userToAdd.id,
-          displayName: name,
-        }
+      // create 2 friendship records in a transaction
+      await prisma.$transaction(async (tx) => {
+        // create friendship record for current user
+        await tx.friend.create({
+          data: {
+            userId: currentUserId,
+            friendId: userToAdd.id,
+            displayName: name,
+          }
+        });
+
+        // create reciprocal friendship record
+        await prisma.$transaction(async (tx) => {
+          await tx.friend.create({
+            data: {
+              userId: userToAdd.id,
+              friendId: currentUserId,
+              displayName: currentUserName,
+            }
+          });
+        });
       })
 
       revalidatePath('/friends')
@@ -102,6 +119,7 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
         invitedBy: currentUserId,
         token,
         expiresAt,
+        displayName: name,
       }
     });
 
@@ -153,7 +171,7 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
 
 export async function getUserFriends(currentUserId: string) {
   try {
-    const friends = prisma.friend.findMany({
+    const friends = await prisma.friend.findMany({
       where: { userId: currentUserId },
       select: {
         displayName: true,
