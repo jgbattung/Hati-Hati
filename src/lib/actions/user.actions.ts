@@ -7,7 +7,7 @@ import { updateUserDB } from "../db/users.db";
 import crypto from 'crypto';
 import { add } from 'date-fns';
 import { Resend } from 'resend';
-import { FRIEND_ERRORS } from "../errors";
+import { FRIEND_ERRORS, INVITE_ERRORS } from "../errors";
 import { revalidatePath } from "next/cache";
 
 function generateInviteToken(): string {
@@ -189,5 +189,43 @@ export async function getUserFriends(currentUserId: string) {
     return friends;
   } catch (error) {
     console.error("Failed to get user's friends: ", error)
+  }
+}
+
+export async function validateInviteToken(token: string) {
+  try {
+    const invitation = await prisma.invitation.findUnique({
+      where: { token },
+      include: {
+        sender: {
+          select: {
+            name: true,
+          }
+        }
+      }
+    });
+
+    // If no invitation found
+    if (!invitation) {
+      return { error: INVITE_ERRORS.INVALID_TOKEN }
+    }
+
+    // Check if invitaiton has expired
+    if (invitation.expiresAt < new Date()) {
+      // Update status to expired
+      await prisma.invitation.update({
+        where: { id: invitation.id },
+        data: { status: 'EXPIRED' }
+      });
+      return { error: INVITE_ERRORS.INVITATION_EXPIRED }
+    }
+
+    // Check if invitation is still pending
+    if (invitation.status !== 'PENDING') {
+      return { error: INVITE_ERRORS.INVITATION_ALREADY_USED }
+    }
+  } catch (error) {
+    console.error('Error validating invitation token: ', error);
+    return { error: INVITE_ERRORS.VALIDATION_ERROR }
   }
 }
