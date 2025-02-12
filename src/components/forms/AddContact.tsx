@@ -12,7 +12,7 @@ import { useUser } from "@clerk/nextjs"
 import { addFriend } from "@/lib/actions/user.actions"
 import { useCallback, useState } from "react"
 import ContactSuccessMessage from "./form-success/ContactSuccessMessage"
-import { ERROR_MESSAGES, FRIEND_ERRORS } from "@/lib/errors"
+import { FRIEND_ERROR_MESSAGES, FRIEND_ERRORS } from "@/lib/errors"
 import ContactErrorMessage from "./form-error/ContactErrorMessage"
 import { addContactTestIds } from "@/utils/constants"
 import { UserRoundPlus } from "lucide-react"
@@ -77,7 +77,7 @@ const AddContact = () => {
       }
 
       if (result.error) {
-        setErrorMessage(ERROR_MESSAGES[result.error] || ERROR_MESSAGES[FRIEND_ERRORS.GENERAL_ERROR]);
+        setErrorMessage(FRIEND_ERROR_MESSAGES[result.error] || FRIEND_ERROR_MESSAGES[FRIEND_ERRORS.GENERAL_ERROR]);
         setShowError(true);
       }
     } catch (error) {
