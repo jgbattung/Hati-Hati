@@ -101,6 +101,7 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
     const existingInvitation = await prisma.invitation.findFirst({
       where: {
         email,
+        invitedBy: currentUserId,
         status: 'PENDING',
       }
     });
