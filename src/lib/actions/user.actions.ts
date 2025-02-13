@@ -224,6 +224,15 @@ export async function validateInviteToken(token: string) {
     if (invitation.status !== 'PENDING') {
       return { error: INVITE_ERRORS.INVITATION_ALREADY_USED }
     }
+
+    return {
+      success: true,
+      invitation: {
+        email: invitation.email,
+        displayName: invitation.displayName,
+        invitedBy: invitation.sender.name
+      }
+    }
   } catch (error) {
     console.error('Error validating invitation token: ', error);
     return { error: INVITE_ERRORS.VALIDATION_ERROR }
