@@ -25,3 +25,8 @@ export const INVITE_ERROR_MESSAGES = {
   [INVITE_ERRORS.INVITATION_ALREADY_USED]: "This invitation has already been used",
   [INVITE_ERRORS.VALIDATION_ERROR]: "There was an error validating you invitation",
 }
+
+export const INVITATION_ERRORS = {
+  INVALID_OR_EXPIRED: 'INVALID_OR_EXPIRED',
+  FAILED_TO_PROCESS: 'FAILED_TO_PROCESS'
+} as const;
