@@ -24,7 +24,7 @@ const InviteError = ({ error }: InviteErrorProps) => {
           <p className='text-zinc-400 text-sm'>{INVITE_ERROR_MESSAGES[error]}</p> 
         </div>
       </div>
-      <div className='flex flex-col items-center justify-center mt-5 gap-4'>
+      <div className='flex flex-col w-full items-center justify-center mt-5 gap-4'>
         <p className='text-center text-zinc-400 font-light text-sm'>
           {`Don't worry - you can still create an account with Hati-hati through the sign-up link below.`}
         </p>
