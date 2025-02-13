@@ -1,4 +1,6 @@
-import React from 'react'
+"use client"
+
+import React, { useEffect } from 'react'
 import inviteSuccess from "../../public/assets/invite-success.svg"
 import Image from 'next/image'
 import Link from 'next/link'
@@ -6,9 +8,19 @@ import { Button } from '../ui/button'
 
 interface InviteWelcomeProps {
   inviterName: string;
+  token: string;
+  email: string;
 }
 
-const InviteWelcome = async ({ inviterName }: InviteWelcomeProps) => {
+const InviteWelcome = ({ inviterName, token, email }: InviteWelcomeProps) => {
+  useEffect(() => {
+    sessionStorage.setItem('inviteData', JSON.stringify({
+      token,
+      email,
+      inviterName,
+    }));
+  }, [token, email, inviterName]);
+
   return (
     <div>
       <div className='h-dvh w-full flex flex-col items-center justify-center px-8 gap-12'>
