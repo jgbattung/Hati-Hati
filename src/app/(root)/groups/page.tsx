@@ -1,3 +1,4 @@
+import InvitationHandler from '@/components/invite/InvitationHandler';
 import { updateUser } from '@/lib/actions/user.actions';
 import { doesuserExist } from '@/lib/db/users.db';
 import { SignOutButton } from '@clerk/nextjs';
@@ -26,15 +27,18 @@ const Groups = async () => {
         throw new Error(`Failed to save user: ${error.message}`);
       }
     }
+    return (
+      <div>
+        <InvitationHandler />
+        <p>Groups</p>
+        <p>{`Hello, ${user?.firstName} ${user?.lastName}`}</p>
+        <p>{user?.emailAddresses[0].emailAddress}</p>
+        <SignOutButton />
+      </div>
+    )
   }
 
-  return (
-    <div>
-      <p>Groups</p>
-      <p>{`Hello, ${user?.firstName} ${user?.lastName}`}</p>
-      <SignOutButton />
-    </div>
-  )
+  return null
 }
 
 export default Groups
