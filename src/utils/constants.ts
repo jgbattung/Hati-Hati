@@ -19,3 +19,13 @@ export const friendsPageTestIds = {
   friendsPage: "friends-page",
   friendsDiv: "friends-div",
 }
+
+export const inviteWelcomePageTestIds = {
+  inviteWelcomePage: "invite-welcome-page",
+  signUpButtonLink: "sign-up-button-link",
+}
+
+export const inviteErrorPageTestIds = {
+  inviteErrorPage: "invite-error-page",
+  signupButtonLink: "sign-up-button-link",
+}
