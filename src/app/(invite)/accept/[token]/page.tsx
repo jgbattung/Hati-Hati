@@ -26,7 +26,6 @@ const InvitePage = async ({ params }: InvitePageProps) => {
 
   return (
     <div>
-      <InviteError error={'INVITATION_EXPIRED'} />
       <InviteWelcome
         inviterName={result.invitation.invitedBy!}
         token={params.token}
