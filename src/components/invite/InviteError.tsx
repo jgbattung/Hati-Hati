@@ -4,6 +4,7 @@ import React from 'react'
 import { Button } from '../ui/button';
 import Image from 'next/image'
 import somethingWentWrong from '../../public/assets/something-went-wrong.svg'
+import { inviteErrorPageTestIds } from '@/utils/constants';
 
 interface InviteErrorProps {
   error: keyof typeof INVITE_ERRORS;
@@ -11,7 +12,10 @@ interface InviteErrorProps {
 
 const InviteError = ({ error }: InviteErrorProps) => {
   return (
-    <div className='h-dvh w-full flex flex-col items-center justify-center px-8 gap-12'>
+    <div 
+      data-testid={inviteErrorPageTestIds.inviteErrorPage}
+      className='h-dvh w-full flex flex-col items-center justify-center px-8 gap-12'
+    >
       <div className='flex flex-col items-center justify-center gap-4'>
         <Image
           src={somethingWentWrong}
@@ -29,7 +33,7 @@ const InviteError = ({ error }: InviteErrorProps) => {
           {`Don't worry - you can still create an account with Hati-hati through the sign-up link below.`}
         </p>
         <div className='flex flex-col items-center justify-center w-full mt-4'>
-          <Link href="/sign-up" className='w-full'>
+          <Link data-testid={inviteErrorPageTestIds.signupButtonLink} href="/sign-up" className='w-full'>
             <Button className='px-4 py-2 w-full rounded-md bg-violet-500 hover:bg-violet-600'>
               Sign up
             </Button>
