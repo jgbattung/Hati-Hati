@@ -124,7 +124,7 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
       }
     });
 
-    const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/invite/accept/${invitation.token}`
+    const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/accept/${invitation.token}`
 
     // In development, bypass email sending and just log the invite link
     if (process.env.NODE_ENV === 'development') {
