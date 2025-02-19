@@ -7,7 +7,7 @@ import { updateUserDB } from "../db/users.db";
 import crypto from 'crypto';
 import { add } from 'date-fns';
 import { Resend } from 'resend';
-import { FRIEND_ERRORS } from "../errors";
+import { FRIEND_ERRORS, INVITATION_ERRORS, INVITE_ERRORS } from "../errors";
 import { revalidatePath } from "next/cache";
 
 function generateInviteToken(): string {
@@ -101,6 +101,7 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
     const existingInvitation = await prisma.invitation.findFirst({
       where: {
         email,
+        invitedBy: currentUserId,
         status: 'PENDING',
       }
     });
@@ -123,7 +124,27 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
       }
     });
 
-    const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/invite/accept/${invitation.token}`
+    const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/accept/${invitation.token}`
+
+    // In development, bypass email sending and just log the invite link
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Development mode - Invitation link:', inviteLink);
+      console.log('Invitation details:', {
+        inviteeName: name,
+        inviterName: currentUserName,
+        email: email
+      });
+      
+      return {
+        success: true,
+        isExistingUser: false,
+        invitation: {
+          email,
+          name,
+          token: invitation.token
+        }
+      }
+    }
 
     try {
       const { error } = await resend.emails.send({
@@ -188,5 +209,128 @@ export async function getUserFriends(currentUserId: string) {
     return friends;
   } catch (error) {
     console.error("Failed to get user's friends: ", error)
+  }
+}
+
+export async function validateInviteToken(token: string) {
+  try {
+    const invitation = await prisma.invitation.findUnique({
+      where: { token },
+      include: {
+        sender: {
+          select: {
+            name: true,
+          }
+        }
+      }
+    });
+
+    // If no invitation found
+    if (!invitation) {
+      return { error: INVITE_ERRORS.INVALID_TOKEN }
+    }
+
+    // Check if invitaiton has expired
+    if (invitation.expiresAt < new Date()) {
+      // Update status to expired
+      await prisma.invitation.update({
+        where: { id: invitation.id },
+        data: { status: 'EXPIRED' }
+      });
+      return { error: INVITE_ERRORS.INVITATION_EXPIRED }
+    }
+
+    // Check if invitation is still pending
+    if (invitation.status !== 'PENDING') {
+      return { error: INVITE_ERRORS.INVITATION_ALREADY_USED }
+    }
+
+    return {
+      success: true,
+      invitation: {
+        email: invitation.email,
+        displayName: invitation.displayName,
+        invitedBy: invitation.sender.name
+      }
+    }
+  } catch (error) {
+    console.error('Error validating invitation token: ', error);
+    return { error: INVITE_ERRORS.VALIDATION_ERROR }
+  }
+}
+
+interface AcceptInvitationParams {
+  id: string,
+  name?: string | null,
+  inviteToken: string,
+}
+
+interface AcceptInvitationSuccess {
+  success: true;
+}
+
+interface AcceptInvitationError {
+  success: false;
+  error: keyof typeof INVITATION_ERRORS;
+}
+
+type AcceptInvitationResult = AcceptInvitationSuccess | AcceptInvitationError;
+
+export async function acceptInvitation({
+  id,
+  name,
+  inviteToken,
+}: AcceptInvitationParams): Promise<AcceptInvitationResult> {
+  try {
+    // Validate the token
+    const invitation = await prisma.invitation.findUnique({
+      where: { token: inviteToken },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            name: true,
+          }
+        }
+      }
+    });
+
+    if (!invitation || invitation.status !== 'PENDING' || invitation.expiresAt < new Date()) {
+      return { success: false, error: INVITATION_ERRORS.INVALID_OR_EXPIRED };
+    }
+
+    // Create friendships and update invitation status
+    await prisma.$transaction(async (tx) => {
+      // Create friendship record for the inviter
+      await tx.friend.create({
+        data: {
+          userId: invitation.invitedBy,
+          friendId: id,
+          displayName: name,
+        }
+      });
+
+      // Create reciprocal friendship record for the new user
+      await tx.friend.create({
+        data: {
+          userId: id,
+          friendId: invitation.invitedBy,
+          displayName: invitation.sender.name,
+        }
+      });
+
+      await tx.invitation.update({
+        where: { id: invitation.id },
+        data: {
+          status: 'ACCEPTED',
+        }
+      });
+    });
+
+    return { success: true };
+
+  } catch (error) {
+    console.error('Error accepting invitation: ', error);
+    return { success: false, error: INVITATION_ERRORS.FAILED_TO_PROCESS };
   }
 }
