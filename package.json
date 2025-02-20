@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:unit": "jest src/__tests__/unit",
+    "test:unit": "jest src/__tests__/unit/components/shared/Footer.test.tsx",
     "test:integration": "jest src/__tests__/integration"
   },
   "dependencies": {
@@ -31,7 +31,8 @@
     "resend": "^4.1.1",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.24.1"
+    "zod": "^3.24.1",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@jest/types": "^29.6.3",
