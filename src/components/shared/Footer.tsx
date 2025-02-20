@@ -2,12 +2,16 @@
 
 import { footerRoutes } from '@/constants'
 import { footerTestIds } from '@/utils/constants'
+import { useAuth } from '@clerk/nextjs'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
 
 const Footer = () => {
+  const { isSignedIn } = useAuth();
   const currentPathname = usePathname();
+
+  if (!isSignedIn) return null;
 
   return (
     <section
