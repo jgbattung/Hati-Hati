@@ -16,6 +16,7 @@ import { FRIEND_ERROR_MESSAGES, FRIEND_ERRORS } from "@/lib/errors"
 import ContactErrorMessage from "./form-error/ContactErrorMessage"
 import { addContactTestIds } from "@/utils/constants"
 import { UserRoundPlus } from "lucide-react"
+import { useLoadingStore } from "@/lib/store"
 
 const AddContact = () => {
   const { user } = useUser();
@@ -24,6 +25,7 @@ const AddContact = () => {
   const [showError, setShowError] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const { isLoading, setIsLoading } = useLoadingStore();
 
   const form = useForm<z.infer<typeof ContactValidation>>({
     resolver: zodResolver(ContactValidation),
@@ -48,6 +50,7 @@ const AddContact = () => {
   }
 
   const onSubmit = async (values: z.infer<typeof ContactValidation>) => {
+    setIsLoading(true);
     try {
       if (!user?.id) return;
 
@@ -82,6 +85,8 @@ const AddContact = () => {
       }
     } catch (error) {
       console.error("Error adding friend: ", error)
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -126,6 +131,7 @@ const AddContact = () => {
                       <Input
                         {...field}
                         className="text-xs rounded-md"
+                        disabled={isLoading}
                       />
                     </FormControl>
                     <FormMessage data-testid={addContactTestIds.nameMessage} className="text-xs text-rose-500" />
@@ -142,6 +148,7 @@ const AddContact = () => {
                       <Input
                         {...field}
                         className="text-xs rounded-md"
+                        disabled={isLoading}
                       />
                     </FormControl>
                     <FormMessage data-testid={addContactTestIds.emailMessage} className="text-xs text-rose-500" />
@@ -152,7 +159,8 @@ const AddContact = () => {
                 <Button
                   data-testid={addContactTestIds.submitButton}
                   type="submit"
-                  className="px-2 py-1 rounded-md bg-violet-700 hover:bg-violet-800 text-zinc-50 font-medium transition-colors"
+                  disabled={isLoading}
+                  className={`px-2 py-1 rounded-md bg-violet-700 hover:bg-violet-800 text-zinc-50 font-medium transition-colors ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   Add new contact
                 </Button>
