@@ -15,6 +15,7 @@ const Groups = async () => {
       try {
         await updateUser({
           id: user.id,
+          username: user.username!,
           email: user.emailAddresses[0].emailAddress,
           name: user.firstName && user.lastName
           ? `${user.firstName} ${user.lastName}`
@@ -33,6 +34,7 @@ const Groups = async () => {
         <p>Groups</p>
         <p>{`Hello, ${user?.firstName} ${user?.lastName}`}</p>
         <p>{user?.emailAddresses[0].emailAddress}</p>
+        <img src={user?.imageUrl} />
         <SignOutButton />
       </div>
     )

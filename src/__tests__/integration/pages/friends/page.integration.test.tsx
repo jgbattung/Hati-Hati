@@ -30,17 +30,17 @@ const mockUser = {
 
 const mockFriends = [
   {
-    displayName: 'Maria',
     friend: {
       id: 'friend_1',
+      username: 'MC',
       name: 'Maria Clara',
       image: 'https://example.com/image1.jpg',
     }
   },
   {
-    displayName: 'Pepe',
     friend: {
       id: 'friend_2',
+      username: 'JR',
       name: 'Jose Rizal',
       image: 'https://example.com/image2.jpg',
     }
@@ -82,8 +82,8 @@ describe("Friends page tests", () => {
     const friendDivs = screen.getAllByTestId(friendsPageTestIds.friendsDiv);
     expect(friendDivs).toHaveLength(mockFriends.length);
 
-    mockFriends.forEach(({ displayName }) => {
-      expect(screen.getByText(displayName)).toBeInTheDocument();
+    mockFriends.forEach(({ friend }) => {
+      expect(screen.getByText(friend.username)).toBeInTheDocument();
     });
   });
 })

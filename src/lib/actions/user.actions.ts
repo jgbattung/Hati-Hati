@@ -17,6 +17,7 @@ function generateInviteToken(): string {
 export interface userDataParams {
   id: string,
   email: string,
+  username: string,
   name?: string | null,
   image?: string | null,
 }
@@ -32,12 +33,11 @@ export async function updateUser(userData: userDataParams) {
 export interface addFriendsParams {
   email: string,
   currentUserId: string,
-  name: string,
   currentUserName: string,
 }
 
 
-export async function addFriend({ email, currentUserId, name, currentUserName }: addFriendsParams) {
+export async function addFriend({ email, currentUserId, currentUserName }: addFriendsParams) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -69,19 +69,15 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
           data: {
             userId: currentUserId,
             friendId: userToAdd.id,
-            displayName: name,
           }
         });
 
         // create reciprocal friendship record
-        await prisma.$transaction(async (tx) => {
-          await tx.friend.create({
-            data: {
-              userId: userToAdd.id,
-              friendId: currentUserId,
-              displayName: currentUserName,
-            }
-          });
+        await tx.friend.create({
+          data: {
+            userId: userToAdd.id,
+            friendId: currentUserId,
+          }
         });
       })
 
@@ -120,7 +116,6 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
         invitedBy: currentUserId,
         token,
         expiresAt,
-        displayName: name,
       }
     });
 
@@ -152,7 +147,6 @@ export async function addFriend({ email, currentUserId, name, currentUserName }:
         to: [email],
         subject: `${currentUserName} invited you to join Hati-Hati`,
         react: InvitationEmail({
-          inviteeName: name,
           inviterName: currentUserName,
           inviteLink
         })
@@ -195,10 +189,10 @@ export async function getUserFriends(currentUserId: string) {
     const friends = await prisma.friend.findMany({
       where: { userId: currentUserId },
       select: {
-        displayName: true,
         friend: {
           select: {
             id: true,
+            username: true,
             name: true,
             image: true,
           }
@@ -249,7 +243,6 @@ export async function validateInviteToken(token: string) {
       success: true,
       invitation: {
         email: invitation.email,
-        displayName: invitation.displayName,
         invitedBy: invitation.sender.name
       }
     }
@@ -278,7 +271,6 @@ type AcceptInvitationResult = AcceptInvitationSuccess | AcceptInvitationError;
 
 export async function acceptInvitation({
   id,
-  name,
   inviteToken,
 }: AcceptInvitationParams): Promise<AcceptInvitationResult> {
   try {
@@ -306,7 +298,6 @@ export async function acceptInvitation({
         data: {
           userId: invitation.invitedBy,
           friendId: id,
-          displayName: name,
         }
       });
 
@@ -315,7 +306,6 @@ export async function acceptInvitation({
         data: {
           userId: id,
           friendId: invitation.invitedBy,
-          displayName: invitation.sender.name,
         }
       });
 

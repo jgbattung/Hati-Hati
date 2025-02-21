@@ -30,7 +30,6 @@ const AddContact = () => {
   const form = useForm<z.infer<typeof ContactValidation>>({
     resolver: zodResolver(ContactValidation),
     defaultValues: {
-      name: "",
       email: "",
     },
   });
@@ -56,7 +55,6 @@ const AddContact = () => {
 
       const result = await addFriend({
         email: values.email,
-        name: values.name,
         currentUserId: user.id,
         currentUserName: user.firstName!,
       });
@@ -121,23 +119,6 @@ const AddContact = () => {
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col items-start justify-center">
-                    <FormLabel className="text-xs">Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        className="text-xs rounded-md"
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    <FormMessage data-testid={addContactTestIds.nameMessage} className="text-xs text-rose-500" />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="email"
