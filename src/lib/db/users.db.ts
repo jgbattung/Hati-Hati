@@ -3,6 +3,7 @@ import { handleDatabaseError, prisma } from "../db/prisma";
 interface ICreateUserData {
   id: string,
   email: string,
+  username: string,
   name?: string | null,
   image?: string | null,
 }

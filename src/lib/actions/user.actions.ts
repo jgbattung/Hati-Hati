@@ -17,6 +17,7 @@ function generateInviteToken(): string {
 export interface userDataParams {
   id: string,
   email: string,
+  username: string,
   name?: string | null,
   image?: string | null,
 }
