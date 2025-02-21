@@ -47,7 +47,6 @@ describe("Add Contacts Dialog tests", () => {
     fireEvent.click(screen.getByTestId(addContactTestIds.addNewFriendButton));
 
     // Check form fields
-    expect(screen.getByLabelText('Name')).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
 
     // Check buttons
@@ -65,11 +64,8 @@ describe("Add Contacts Dialog tests", () => {
 
       fireEvent.click(submitButton);
 
-      const nameError = await screen.findByTestId(addContactTestIds.nameMessage);
       const emailError = await screen.findByTestId(addContactTestIds.emailMessage);
     
-      expect(nameError).toBeInTheDocument();
-      expect(nameError).toHaveTextContent("Name is required.");
       expect(emailError).toBeInTheDocument();
       expect(emailError).toHaveTextContent("Email is required.");
     });
@@ -80,11 +76,9 @@ describe("Add Contacts Dialog tests", () => {
 
       fireEvent.click(screen.getByTestId(addContactTestIds.addNewFriendButton));
 
-      const nameField = screen.getByLabelText('Name');
       const emailField = screen.getByLabelText('Email');
 
       // Populate fields
-      await user.type(nameField, 'Test user');
       await user.type(emailField, 'invalid');
 
       const submitButton = screen.getByTestId(addContactTestIds.submitButton);
@@ -102,11 +96,9 @@ describe("Add Contacts Dialog tests", () => {
 
       await user.click(screen.getByTestId(addContactTestIds.addNewFriendButton));
 
-      const nameField = screen.getByLabelText('Name');
       const emailField = screen.getByLabelText('Email');
 
       // Populate fields
-      await user.type(nameField, 'Test user');
       await user.type(emailField, 'test@email.com');
 
       // Click cancel
@@ -118,11 +110,9 @@ describe("Add Contacts Dialog tests", () => {
       // Open the Dialog again
       await user.click(screen.getByTestId(addContactTestIds.addNewFriendButton));
 
-      const newNameField = screen.getByLabelText('Name');
       const newEmailField = screen.getByLabelText('Email');
 
       // Check if the fields are empty
-      expect(newNameField).toHaveValue('');
       expect(newEmailField).toHaveValue('');
     });
   });

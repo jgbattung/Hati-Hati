@@ -53,11 +53,9 @@ describe("Add Contact success scenarios tests", () => {
     // Click the add new friend button
     await user.click(screen.getByTestId(addContactTestIds.addNewFriendButton));
 
-    const nameField = screen.getByLabelText('Name');
     const emailField = screen.getByLabelText('Email');
 
     // Fill up the form
-    await user.type(nameField, 'Juan Cruz');
     await user.type(emailField, 'juan@example.com');
 
     // Submit the form
@@ -72,7 +70,6 @@ describe("Add Contact success scenarios tests", () => {
     // Verify if addFriend was called with the correct parameters
     expect(addFriend).toHaveBeenCalledWith({
       email: 'juan@example.com',
-      name: 'Juan Cruz',
       currentUserId: mockUser.id,
       currentUserName: mockUser.firstName,
     });
@@ -97,11 +94,9 @@ describe("Add Contact success scenarios tests", () => {
     // Click the add new friend button
     await user.click(screen.getByTestId(addContactTestIds.addNewFriendButton));
 
-    const nameField = screen.getByLabelText('Name');
     const emailField = screen.getByLabelText('Email');
 
     // Fill up the form
-    await user.type(nameField, 'New User');
     await user.type(emailField, 'new@example.com');
 
     // Submit the form
@@ -116,7 +111,6 @@ describe("Add Contact success scenarios tests", () => {
     // Verify if addFriend was called with the correct parameters
     expect(addFriend).toHaveBeenCalledWith({
       email: 'new@example.com',
-      name: 'New User',
       currentUserId: mockUser.id,
       currentUserName: mockUser.firstName,
     });
@@ -137,11 +131,9 @@ describe("Add Contact error scenarios tests", () => {
     // Click the add new friend button
     await user.click(screen.getByTestId(addContactTestIds.addNewFriendButton));
 
-    const nameField = screen.getByLabelText('Name');
     const emailField = screen.getByLabelText('Email');
 
     // Fill up the form
-    await user.type(nameField, 'Existing Friend');
     await user.type(emailField, 'existing@example.com');
 
     // Submit the form
@@ -166,11 +158,9 @@ describe("Add Contact error scenarios tests", () => {
     // Click the add new friend button
     await user.click(screen.getByTestId(addContactTestIds.addNewFriendButton));
 
-    const nameField = screen.getByLabelText('Name');
     const emailField = screen.getByLabelText('Email');
 
     // Fill up the form
-    await user.type(nameField, 'Pending User');
     await user.type(emailField, 'pending@example.com');
 
     // Submit the form
@@ -195,11 +185,9 @@ describe("Add Contact error scenarios tests", () => {
     // Click the add new friend button
     await user.click(screen.getByTestId(addContactTestIds.addNewFriendButton));
 
-    const nameField = screen.getByLabelText('Name');
     const emailField = screen.getByLabelText('Email');
 
     // Fill up the form
-    await user.type(nameField, 'New User');
     await user.type(emailField, 'new@example.com');
 
     // Submit the form
@@ -223,10 +211,8 @@ describe("Add Contact error scenarios tests", () => {
 
     await user.click(screen.getByTestId(addContactTestIds.addNewFriendButton));
     
-    const nameField = screen.getByLabelText('Name');
     const emailField = screen.getByLabelText('Email');
 
-    await user.type(nameField, 'Test User');
     await user.type(emailField, 'test@example.com');
 
     await user.click(screen.getByTestId(addContactTestIds.submitButton));

@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:unit": "jest src/__tests__/unit/components/shared/Footer.test.tsx",
+    "test:unit": "jest src/__tests__/unit",
     "test:integration": "jest src/__tests__/integration"
   },
   "dependencies": {
