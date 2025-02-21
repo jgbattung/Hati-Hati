@@ -1,13 +1,11 @@
 import React from 'react'
 
 interface InvitationEmailProps {
-  inviteeName: string;
   inviterName: string;
   inviteLink: string;
 }
 
 const InvitationEmail: React.FC<Readonly<InvitationEmailProps>> = ({
-  inviteeName,
   inviterName,
   inviteLink,
 }) => {
@@ -37,7 +35,7 @@ const InvitationEmail: React.FC<Readonly<InvitationEmailProps>> = ({
           marginBottom: '24px',
           lineHeight: '1.5',
         }}>
-          Hi {inviteeName},
+          Hey there!
         </p>
 
         <p style={{
