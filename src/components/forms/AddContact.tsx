@@ -30,7 +30,6 @@ const AddContact = () => {
   const form = useForm<z.infer<typeof ContactValidation>>({
     resolver: zodResolver(ContactValidation),
     defaultValues: {
-      name: "",
       email: "",
     },
   });
