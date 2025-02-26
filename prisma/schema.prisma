@@ -84,6 +84,7 @@ model GroupMember {
   userId String
   status MemberStatus @default(ACTIVE)
   displayName String? 
+  username String
   joinedAt DateTime @default(now())
   leftAt DateTime?
 
