@@ -30,3 +30,17 @@ export const INVITATION_ERRORS = {
   INVALID_OR_EXPIRED: 'INVALID_OR_EXPIRED',
   FAILED_TO_PROCESS: 'FAILED_TO_PROCESS'
 } as const;
+
+export const GROUP_ERRORS = {
+  CREATION_FAILED: 'CREATION_FAILED',
+  NOT_FOUND: 'NOT_FOUND',
+  UNAUTHORIZED: 'UNAUTHORIZED',
+  FETCH_FAILED: 'FETCH_FAILED',
+} as const
+
+export const GROUP_ERROR_MESSAGES = {
+  [GROUP_ERRORS.CREATION_FAILED]: "Failed to create group",
+  [GROUP_ERRORS.NOT_FOUND]: "Group not found",
+  [GROUP_ERRORS.UNAUTHORIZED]: "You are not authorized to view this group",
+  [GROUP_ERRORS.FETCH_FAILED]: "Faied to fetch user groups",
+} as const;
