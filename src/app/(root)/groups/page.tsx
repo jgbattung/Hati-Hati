@@ -1,7 +1,7 @@
+import CreateGroup from '@/components/forms/CreateGroup';
 import InvitationHandler from '@/components/invite/InvitationHandler';
 import { updateUser } from '@/lib/actions/user.actions';
 import { doesuserExist } from '@/lib/db/users.db';
-import { SignOutButton } from '@clerk/nextjs';
 import { currentUser } from '@clerk/nextjs/server'
 import React from 'react'
 
@@ -29,13 +29,11 @@ const Groups = async () => {
       }
     }
     return (
-      <div>
+      <div className='w-full min-h-dvh relative pb-20'>
         <InvitationHandler />
-        <p>Groups</p>
-        <p>{`Hello, ${user?.firstName} ${user?.lastName}`}</p>
-        <p>{user?.emailAddresses[0].emailAddress}</p>
-        <img src={user?.imageUrl} />
-        <SignOutButton />
+        <div className='fixed bottom-24 right-4 z-10'>
+          <CreateGroup />
+        </div>
       </div>
     )
   }

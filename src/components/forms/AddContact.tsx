@@ -108,7 +108,9 @@ const AddContact = () => {
           data-testid={addContactTestIds.addContactDialog}
           className="max-sm:max-w-72 rounded-md border-2 border-zinc-600 [&>button:last-child]:hidden"
         >
-          <DialogHeader>
+          <DialogHeader
+            className='flex flex-col items-center justify-center gap-3'
+          >
             <DialogTitle data-testid={addContactTestIds.dialogTitle}>Add a new contact</DialogTitle>
             <DialogDescription
               data-testid={addContactTestIds.dialogDescription}
