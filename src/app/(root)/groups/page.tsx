@@ -1,9 +1,13 @@
 import CreateGroup from '@/components/forms/CreateGroup';
 import InvitationHandler from '@/components/invite/InvitationHandler';
+import { getUserGroups } from '@/lib/actions/group.actions';
 import { updateUser } from '@/lib/actions/user.actions';
 import { doesuserExist } from '@/lib/db/users.db';
 import { currentUser } from '@clerk/nextjs/server'
+import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react'
+import imagePlaceholder from '../../../public/assets/group-paceholder.jpeg'
 
 const Groups = async () => {
   const user = await currentUser();
@@ -28,9 +32,40 @@ const Groups = async () => {
         throw new Error(`Failed to save user: ${error.message}`);
       }
     }
+
+    const userGroups = await getUserGroups({
+      userId: user.id,
+    });
+
+    console.log(userGroups.groups)
+
     return (
-      <div className='w-full min-h-dvh relative pb-20'>
+      <div className='w-full min-h-dvh relative pb-20 py-10 px-4'>
         <InvitationHandler />
+        <div className='w-full flex flex-col items-start justify-center gap-4'>
+          {userGroups.groups?.map((group) => (
+            <Link
+              key={group.id}
+              href={`/groups/${group.id}`}
+            >
+              <div className='flex gap-4 items-center justify-center'>
+                <div>
+                  <Image
+                    src={imagePlaceholder}
+                    alt="group image"
+                    width={90}
+                    height={90}
+                    className='object-cover min-w-24 max-w-24 min-h-20 max-h-20 rounded-xl'
+                  />
+                </div>
+                <div className='flex flex-col'>
+                  <p className='font-semibold'>{group.name}</p>
+                  <p className='text-zinc-400'>settled up</p>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
         <div className='fixed bottom-24 right-4 z-10'>
           <CreateGroup />
         </div>
