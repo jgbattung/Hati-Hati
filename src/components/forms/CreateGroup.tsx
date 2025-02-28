@@ -80,7 +80,7 @@ const CreateGroup = () => {
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 w-72 rounded-md border-2 p-5 border-zinc-600 [&>button:last-child]:hidden"
+        className="fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 w-72 rounded-md border-2 p-5 border-zinc-600 bg-zinc-900 [&>button:last-child]:hidden"
         >
         <DialogHeader
           className='flex flex-col items-center justify-center gap-3'

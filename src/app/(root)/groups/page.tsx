@@ -8,6 +8,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
 import imagePlaceholder from '../../../public/assets/group-paceholder.jpeg'
+import { SignOutButton } from '@clerk/nextjs';
+import { Users } from 'lucide-react';
 
 const Groups = async () => {
   const user = await currentUser();
@@ -37,7 +39,20 @@ const Groups = async () => {
       userId: user.id,
     });
 
-    console.log(userGroups.groups)
+    if (userGroups.groups?.length === 0) {
+      return (
+        <div className='w-full min-h-dvh relative pb-20 py-10 px-4 flex flex-col items-center justify-center gap-4'>
+          <Users size={64} className="text-zinc-600" />
+          <h3 className="text-xl font-medium">No groups yet</h3>
+          <p className="text-zinc-400 text-sm text-center mt-4">
+            Create your first group to start tracking shared expenses with friends.
+          </p>
+          <div className='fixed bottom-24 right-4 z-10'>
+            <CreateGroup />
+          </div>
+        </div>
+      )
+    }
 
     return (
       <div className='w-full min-h-dvh relative pb-20 py-10 px-4'>
