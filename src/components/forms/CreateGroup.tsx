@@ -14,11 +14,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { useLoadingStore } from '@/lib/store';
 import { createGroup } from '@/lib/actions/group.actions';
+import { useRouter } from 'next/navigation';
 
 const CreateGroup = () => {
   const { user } = useUser();
   const [open, setOpen] = useState(false)
   const { isLoading, setIsLoading } = useLoadingStore();
+  const router = useRouter();
 
 
   const form = useForm<z.infer<typeof GroupValidation>>({
@@ -47,6 +49,12 @@ const CreateGroup = () => {
       });
 
       if (result) console.log(result.group);
+
+      if (result.success && result.group) {
+        setOpen(false)
+        form.reset();
+        router.push(`/groups/${result.group.id}`)
+      }
 
       if (result.error) {
         console.error("Error creating group: ", result.error);
