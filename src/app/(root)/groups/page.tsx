@@ -8,7 +8,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
 import imagePlaceholder from '../../../public/assets/group-paceholder.jpeg'
-import { SignOutButton } from '@clerk/nextjs';
 import { Users } from 'lucide-react';
 
 const Groups = async () => {
@@ -87,7 +86,6 @@ const Groups = async () => {
       </div>
     )
   }
-
   return null
 }
 

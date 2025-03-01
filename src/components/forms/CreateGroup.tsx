@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { useLoadingStore } from '@/lib/store';
 import { createGroup } from '@/lib/actions/group.actions';
 import { useRouter } from 'next/navigation';
+import { createGroupTestIds } from '@/utils/constants';
 
 const CreateGroup = () => {
   const { user } = useUser();
@@ -71,6 +72,7 @@ const CreateGroup = () => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
+          data-testid={createGroupTestIds.createGroupButton}
           className="flex items-center justify-center px-5 py-6 rounded-3xl bg-teal-600 hover:bg-teal-700 text-zinc-100 transition-colors"
         >
           <Users
@@ -80,13 +82,15 @@ const CreateGroup = () => {
         </Button>
       </DialogTrigger>
       <DialogContent
+        data-testid={createGroupTestIds.createGroupDialog}
         className="fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 w-72 rounded-md border-2 p-5 border-zinc-600 bg-zinc-900 [&>button:last-child]:hidden"
         >
         <DialogHeader
           className='flex flex-col items-center justify-center gap-3'
         >
-          <DialogTitle>Create a group</DialogTitle>
+          <DialogTitle data-testid={createGroupTestIds.dialogTitle}>Create a group</DialogTitle>
           <DialogDescription
+            data-testid={createGroupTestIds.dialogDescription}
             className="text-zinc-400 text-xs"
           >
             {`Set your group's name. You can add group members later.`}  
@@ -107,6 +111,7 @@ const CreateGroup = () => {
                     />
                   </FormControl>
                   <FormMessage
+                    data-testid={createGroupTestIds.groupNameMessage}
                     className="text-xs text-rose-500"
                   />
                 </FormItem>
@@ -114,6 +119,7 @@ const CreateGroup = () => {
             />
             <div className="mt-6 flex flex-col gap-2">
               <Button
+                data-testid={createGroupTestIds.submitButton}
                 type="submit"
                 disabled={isLoading}
                 className={`px-2 py-1 rounded-md bg-violet-700 hover:bg-violet-800 text-zinc-50 font-medium transition-colors ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -121,6 +127,7 @@ const CreateGroup = () => {
                 Create group
               </Button>
               <Button
+                data-testid={createGroupTestIds.cancelButton}
                 type="button"
                 onClick={handleCancel}
                 className="px-2 py-1 rounded-md border-2 border-zinc-700 text-zinc-300 hover:bg-zinc-800 transition-colors"

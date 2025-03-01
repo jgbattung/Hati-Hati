@@ -29,3 +29,13 @@ export const inviteErrorPageTestIds = {
   inviteErrorPage: "invite-error-page",
   signupButtonLink: "sign-up-button-link",
 }
+
+export const createGroupTestIds = {
+  createGroupButton: "create-a-new-group",
+  createGroupDialog: "create-group-dialog",
+  dialogTitle: "dialog-title",
+  dialogDescription: "dialog-description",
+  submitButton: "submit-button",
+  cancelButton: "cancel-button",
+  groupNameMessage: "group-name-message",
+}
