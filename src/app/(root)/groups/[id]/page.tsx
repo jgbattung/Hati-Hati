@@ -3,6 +3,9 @@ import { currentUser } from '@clerk/nextjs/server';
 import Image from 'next/image';
 import React from 'react'
 import groupPlaceholderImg from '../../../../public/assets/group-paceholder.jpeg'
+import somethingWentWrong from '../../../../public/assets/something-went-wrong.svg'
+import { groupPageTestIds } from '@/utils/constants';
+import { GROUP_ERROR_MESSAGES, GROUP_ERRORS } from '@/lib/errors';
 
 interface GroupPageProps {
   params: {
@@ -21,10 +24,9 @@ const Group = async ({ params }: GroupPageProps) => {
   });
 
   return (
-    <div className='w-full min-h-dvh'>
+    <div data-testid={groupPageTestIds.groupPage} className='w-full min-h-dvh'>
       {groupInfo.success && groupInfo.group ? (
         <div className='w-full flex flex-col gap-4'>
-          {/* Cover photo and group photo */}
           <div className='w-full flex flex-col'>
             <div className='w-full h-32 relative overflow-hidden'>
               <Image
@@ -52,7 +54,28 @@ const Group = async ({ params }: GroupPageProps) => {
           </div>
         </div>
       ) : (
-        <p>ERROR</p>
+        <div 
+          data-testid={groupPageTestIds.groupPageError}
+          className='w-full min-h-dvh flex flex-col items-center justify-center'
+        >
+          <div className='flex flex-col items-center justify-center'>
+            <Image 
+              src={somethingWentWrong}
+              alt="somehting-went-wrong"
+              width={200}
+              height={200}
+            />
+            <div className='flex flex-col items-center justify-center gap-4 mt-5'>
+              <h1 className='text-xl font-bold'>Something went wrong</h1>
+              <p className='text-zinc-400 text-sm'>
+              {!groupInfo.success && groupInfo.error
+                ? GROUP_ERROR_MESSAGES[groupInfo.error]
+                : GROUP_ERROR_MESSAGES[GROUP_ERRORS.GENERAL_ERROR]
+              }
+              </p>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
