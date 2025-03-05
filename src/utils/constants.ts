@@ -39,3 +39,10 @@ export const createGroupTestIds = {
   cancelButton: "cancel-button",
   groupNameMessage: "group-name-message",
 }
+
+export const groupPageTestIds = {
+  groupPage: "group-page",
+  groupPageError: "group-page-error",
+  groupInfoDiv: "group-info-div",
+  groupPageImage: "group-page-image",
+}

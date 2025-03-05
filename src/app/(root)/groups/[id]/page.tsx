@@ -26,7 +26,10 @@ const Group = async ({ params }: GroupPageProps) => {
   return (
     <div data-testid={groupPageTestIds.groupPage} className='w-full min-h-dvh'>
       {groupInfo.success && groupInfo.group ? (
-        <div className='w-full flex flex-col gap-4'>
+        <div
+          data-testid={groupPageTestIds.groupInfoDiv}
+          className='w-full flex flex-col gap-4'
+        >
           <div className='w-full flex flex-col'>
             <div className='w-full h-32 relative overflow-hidden'>
               <Image
@@ -40,6 +43,7 @@ const Group = async ({ params }: GroupPageProps) => {
             </div>
             <div className='-mt-12 z-50 ml-8'>
               <Image
+                data-testid={groupPageTestIds.groupPageImage}
                 src={groupPlaceholderImg}
                 alt="img"
                 width={80}
