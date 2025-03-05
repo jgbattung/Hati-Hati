@@ -54,7 +54,49 @@ interface GetGroupByIdParams {
 
 export async function getGroupById({ groupId, userId }: GetGroupByIdParams) {
   try {
-    // Check first if user is a member of the group
+      // Fetch the group with members
+      const group = await prisma.group.findUnique({
+        where: {
+          id: groupId,
+        },
+        include: {
+          members: {
+            where: {
+              status: 'ACTIVE'
+            },
+            orderBy: {
+              joinedAt: 'asc'
+            },
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  name: true,
+                  image: true,
+                }
+              }
+            }
+          },
+          owner: {
+            select: {
+              id: true,
+              username: true,
+              name: true,
+              image: true,
+            }
+          }
+        }
+      });
+  
+      if (!group) {
+        return {
+          success: false,
+          error: GROUP_ERRORS.NOT_FOUND
+        };
+      }
+
+    // Check if user is a member of the group
     const membership = await prisma.groupMember.findUnique({
       where: {
         groupId_userId: {
@@ -68,48 +110,6 @@ export async function getGroupById({ groupId, userId }: GetGroupByIdParams) {
       return {
         success: false,
         error: GROUP_ERRORS.UNAUTHORIZED,
-      };
-    }
-
-    // Fetch the group with members
-    const group = await prisma.group.findUnique({
-      where: {
-        id: groupId,
-      },
-      include: {
-        members: {
-          where: {
-            status: 'ACTIVE'
-          },
-          orderBy: {
-            joinedAt: 'asc'
-          },
-          include: {
-            user: {
-              select: {
-                id: true,
-                username: true,
-                name: true,
-                image: true,
-              }
-            }
-          }
-        },
-        owner: {
-          select: {
-            id: true,
-            username: true,
-            name: true,
-            image: true,
-          }
-        }
-      }
-    });
-
-    if (!group) {
-      return {
-        success: false,
-        error: GROUP_ERRORS.NOT_FOUND
       };
     }
 
