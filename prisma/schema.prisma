@@ -26,6 +26,9 @@ model User {
   friendsOf Friend[] @relation("FriendsOfUser")
 
   sentInvites Invitation[] @relation("SentInvites")
+
+  ownedGroups Group[] @relation("OwnedGroups")
+  groupMemberships GroupMember[]
 }
 
 model Friend {
@@ -62,3 +65,40 @@ model Invitation {
   @@index([email])
   @@index([token])
 }
+
+model Group {
+  id String @id @default(cuid())
+  name String
+  currency String @default("PHP")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ownerId String
+
+  owner User @relation("OwnedGroups", fields: [ownerId], references: [id])
+  members GroupMember[]
+}
+
+model GroupMember {
+  id String @id @default(cuid())
+  groupId String
+  userId String
+  status MemberStatus @default(ACTIVE)
+  displayName String? 
+  username String
+  joinedAt DateTime @default(now())
+  leftAt DateTime?
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId])
+  @@index([groupId])
+  @@index([userId])
+}
+
+enum MemberStatus {
+  ACTIVE
+  LEFT
+  DELETED
+}
+
