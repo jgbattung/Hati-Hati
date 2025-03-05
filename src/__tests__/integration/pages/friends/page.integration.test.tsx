@@ -49,7 +49,6 @@ const mockFriends = [
 
 const renderFriendsPage = async () => {
   const Component = await Friends();
-  console.log(Component);
   render(Component)
 }
 

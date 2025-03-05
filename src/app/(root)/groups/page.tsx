@@ -9,6 +9,7 @@ import Link from 'next/link';
 import React from 'react'
 import imagePlaceholder from '../../../public/assets/group-paceholder.jpeg'
 import { Users } from 'lucide-react';
+import { groupsPageTestIds } from '@/utils/constants';
 
 const Groups = async () => {
   const user = await currentUser();
@@ -40,7 +41,10 @@ const Groups = async () => {
 
     if (userGroups.groups?.length === 0) {
       return (
-        <div className='w-full min-h-dvh relative pb-20 py-10 px-4 flex flex-col items-center justify-center gap-4'>
+        <div
+          data-testid={groupsPageTestIds.noGroupsDiv}
+          className='w-full min-h-dvh relative pb-20 py-10 px-4 flex flex-col items-center justify-center gap-4'
+        >
           <Users size={64} className="text-zinc-600" />
           <h3 className="text-xl font-medium">No groups yet</h3>
           <p className="text-zinc-400 text-sm text-center mt-4">
@@ -54,7 +58,10 @@ const Groups = async () => {
     }
 
     return (
-      <div className='w-full min-h-dvh relative pb-20 py-10 px-4'>
+      <div
+        data-testid={groupsPageTestIds.groupsPage}
+        className='w-full min-h-dvh relative pb-20 py-10 px-4'
+      >
         <InvitationHandler />
         <div className='w-full flex flex-col items-start justify-center gap-4'>
           {userGroups.groups?.map((group) => (
@@ -62,7 +69,10 @@ const Groups = async () => {
               key={group.id}
               href={`/groups/${group.id}`}
             >
-              <div className='flex gap-4 items-center justify-center'>
+              <div
+                data-testid={groupsPageTestIds.groupsDiv}
+                className='flex gap-4 items-center justify-center'
+              >
                 <div>
                   <Image
                     src={imagePlaceholder}

@@ -46,3 +46,9 @@ export const groupPageTestIds = {
   groupInfoDiv: "group-info-div",
   groupPageImage: "group-page-image",
 }
+
+export const groupsPageTestIds = {
+  groupsPage: "groups-page",
+  groupsDiv: "groups-div",
+  noGroupsDiv: "no-groups-div" 
+}
