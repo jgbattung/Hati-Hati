@@ -1,66 +1,67 @@
 "use client"
 
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { useState } from "react";
+import { useLoadingStore } from "@/lib/store";
 import { z } from "zod";
-import { GroupValidation } from '@/lib/validations/group'
-import { useUser } from '@clerk/nextjs'
-import { DialogContent } from '@radix-ui/react-dialog'
-import { Users } from 'lucide-react'
-import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '@/components/ui/input';
-import { useLoadingStore } from '@/lib/store';
-import { createGroup } from '@/lib/actions/group.actions';
-import { useRouter } from 'next/navigation';
-import { createGroupTestIds } from '@/utils/constants';
+import { useUser } from "@clerk/nextjs"
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { GroupValidation } from "@/lib/validations/group";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
+import { Button } from "../ui/button";
+import { Pencil } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader } from "../ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { Input } from "../ui/input";
+import { updateGroupDetails } from "@/lib/actions/group.actions";
+import { updateGroupNameTestIds } from "@/utils/constants";
 
-const CreateGroup = () => {
+interface UpdateGroupNameProps {
+  groupId: string;
+  currentName: string;
+}
+
+const UpdateGroupName = ({ groupId, currentName }: UpdateGroupNameProps) => {
   const { user } = useUser();
   const [open, setOpen] = useState(false)
   const { isLoading, setIsLoading } = useLoadingStore();
   const router = useRouter();
-
-
+  
   const form = useForm<z.infer<typeof GroupValidation>>({
     resolver: zodResolver(GroupValidation),
     defaultValues: {
-      name: "",
+      name: currentName,
     },
   });
 
   const handleCancel = () => {
     setOpen(false);
     form.reset();
-  }
-
+  };
 
   const onSubmit = async (values: z.infer<typeof GroupValidation>) => {
     setIsLoading(true)
     try {
       if (!user?.id) return;
 
-      const result = await createGroup({
-        name: values.name,
+      const result = await updateGroupDetails({
+        groupId,
         userId: user.id,
-        username: user.username!,
-        userDisplayName: user.fullName ? user.fullName : "",
+        name: values.name,
       });
 
       if (result.success && result.group) {
-        setOpen(false)
+        setOpen(false);
         form.reset();
-        router.push(`/groups/${result.group.id}`)
+        router.push(`/groups/${groupId}/settings`);
       }
 
       if (result.error) {
-        console.error("Error creating group: ", result.error);
+        console.error("Error renaming group: ", result.error)
       }
-
     } catch (error) {
-      console.error("Error creating group: ", error);
+      console.error("Error renaming group: ", error)
     } finally {
       setIsLoading(false)
     }
@@ -69,30 +70,19 @@ const CreateGroup = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          data-testid={createGroupTestIds.createGroupButton}
-          className="flex items-center justify-center px-5 py-6 rounded-3xl bg-teal-600 hover:bg-teal-700 text-zinc-100 transition-colors"
-        >
-          <Users
-            strokeWidth={3}
-          />
-          Create new group
+        <Button data-testid={updateGroupNameTestIds.updateGroupButton}>
+          <Pencil size={18} />
         </Button>
       </DialogTrigger>
       <DialogContent
-        data-testid={createGroupTestIds.createGroupDialog}
+        data-testid={updateGroupNameTestIds.updateGroupDialog}
         className="fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 w-72 rounded-md border-2 p-5 border-zinc-600 bg-zinc-900 [&>button:last-child]:hidden"
-        >
+      >
         <DialogHeader
           className='flex flex-col items-center justify-center gap-3'
         >
-          <DialogTitle data-testid={createGroupTestIds.dialogTitle}>Create a group</DialogTitle>
-          <DialogDescription
-            data-testid={createGroupTestIds.dialogDescription}
-            className="text-zinc-400 text-xs"
-          >
-            {`Set your group's name. You can add group members later.`}  
-          </DialogDescription>
+          <DialogTitle data-testid={updateGroupNameTestIds.dialogTitle}>Rename your group</DialogTitle>
+          <DialogDescription />
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -100,7 +90,7 @@ const CreateGroup = () => {
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem className="flex flex-col items-start justify-center mt-5">
+                <FormItem className="flex flex-col items-start justify-center">
                   <FormLabel className="text-xs">Group Name</FormLabel>
                   <FormControl>
                     <Input
@@ -109,23 +99,22 @@ const CreateGroup = () => {
                     />
                   </FormControl>
                   <FormMessage
-                    data-testid={createGroupTestIds.groupNameMessage}
                     className="text-xs text-rose-500"
                   />
                 </FormItem>
-              )} 
+              )}
             />
             <div className="mt-6 flex flex-col gap-2">
               <Button
-                data-testid={createGroupTestIds.submitButton}
+                data-testid={updateGroupNameTestIds.confirmButton}
                 type="submit"
                 disabled={isLoading}
                 className={`px-2 py-1 rounded-md bg-violet-700 hover:bg-violet-800 text-zinc-50 font-medium transition-colors ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                Create group
+                Confirm
               </Button>
               <Button
-                data-testid={createGroupTestIds.cancelButton}
+                data-testid={updateGroupNameTestIds.cancelButton}
                 type="button"
                 onClick={handleCancel}
                 className="px-2 py-1 rounded-md border-2 border-zinc-700 text-zinc-300 hover:bg-zinc-800 transition-colors"
@@ -140,4 +129,6 @@ const CreateGroup = () => {
   )
 }
 
-export default CreateGroup
+export default UpdateGroupName
+
+

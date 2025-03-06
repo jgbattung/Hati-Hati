@@ -38,6 +38,7 @@ describe("User database operations tests", () => {
     const mockUserData = {
       id: 'test_user_id',
       email: 'test@example.com',
+      username: 'test',
       name: 'Test User',
       image: 'https://example.com/image.jpg'
     };

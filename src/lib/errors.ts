@@ -37,6 +37,7 @@ export const GROUP_ERRORS = {
   UNAUTHORIZED: 'UNAUTHORIZED',
   FETCH_FAILED: 'FETCH_FAILED',
   GENERAL_ERROR: 'GENERAL_ERROR',
+  UPDATE_FAILED: 'UPDATE_FAILED,'
 } as const
 
 export const GROUP_ERROR_MESSAGES = {
@@ -44,5 +45,6 @@ export const GROUP_ERROR_MESSAGES = {
   [GROUP_ERRORS.NOT_FOUND]: "Group not found",
   [GROUP_ERRORS.UNAUTHORIZED]: "You are not authorized to view this group",
   [GROUP_ERRORS.FETCH_FAILED]: "Faied to fetch user groups",
-  [GROUP_ERRORS.GENERAL_ERROR]: "Something went wrong with this group"
+  [GROUP_ERRORS.GENERAL_ERROR]: "Something went wrong with this group",
+  [GROUP_ERRORS.UPDATE_FAILED]: "Failed to update group",
 } as const;
