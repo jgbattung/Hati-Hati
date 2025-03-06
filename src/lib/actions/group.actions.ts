@@ -168,3 +168,75 @@ export async function getUserGroups({ userId }: GetUserGroupParams) {
     };
   }
 }
+
+interface UpdateGroupDetailsParams {
+  groupId: string;
+  userId: string;
+  name: string;
+}
+
+export async function updateGroupDetails({ groupId, userId, name }: UpdateGroupDetailsParams) {
+  try {
+    // Check if the user is a member of the group
+    const membership = await prisma.groupMember.findUnique({
+      where: {
+        groupId_userId: {
+          groupId,
+          userId,
+        }
+      },
+      select: { status: true }
+    });
+
+    if (!membership) {
+      return {
+        success: false,
+        error: GROUP_ERRORS.UNAUTHORIZED,
+      }
+    }
+
+    // Check if uer is an active member
+    if (membership.status !== "ACTIVE") {
+      return {
+        success: false,
+        error: GROUP_ERRORS.UNAUTHORIZED,
+      } 
+    }
+
+    // Update group name
+    const updateGroup = await prisma.group.update({
+      where: {id: groupId },
+      data: { name },
+      include: {
+        members: {
+          where: { status: 'ACTIVE' },
+          include:{
+            user: {
+              select: {
+                id: true,
+                username: true,
+                name: true,
+                image: true,
+              }
+            }
+          }
+        }
+      }
+    });
+
+    revalidatePath(`/groups/${groupId}`);
+    revalidatePath(`/groups/${groupId}/settings`);
+    revalidatePath('/groups');
+
+    return {
+      success: true,
+      group: updateGroup
+    };
+  } catch (error) {
+    console.error("Failed to update group details: ", error)
+    return {
+      success: false,
+      error: GROUP_ERRORS.UPDATE_FAILED,
+    }
+  }
+}
