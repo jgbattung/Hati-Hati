@@ -45,5 +45,6 @@ export const GROUP_ERROR_MESSAGES = {
   [GROUP_ERRORS.NOT_FOUND]: "Group not found",
   [GROUP_ERRORS.UNAUTHORIZED]: "You are not authorized to view this group",
   [GROUP_ERRORS.FETCH_FAILED]: "Faied to fetch user groups",
-  [GROUP_ERRORS.GENERAL_ERROR]: "Something went wrong with this group"
+  [GROUP_ERRORS.GENERAL_ERROR]: "Something went wrong with this group",
+  [GROUP_ERRORS.UPDATE_FAILED]: "Failed to update group",
 } as const;
