@@ -52,3 +52,18 @@ export const groupsPageTestIds = {
   groupsDiv: "groups-div",
   noGroupsDiv: "no-groups-div" 
 }
+
+export const headerTestIds = {
+  header: "header",
+  backButton: "back-button",
+  settingsButton: "setttings-button",
+}
+
+export const updateGroupNameTestIds = {
+  updateGroupButton: "update-group-button",
+  updateGroupDialog: "update-group-dialog",
+  dialogTitle: "dialog-title",
+  confirmButton: "confirm-button",
+  cancelButton: "cancel-button",
+  groupNameMessage: "group-name-message",
+}
