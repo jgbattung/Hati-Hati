@@ -14,6 +14,11 @@ jest.mock('@/lib/actions/group.actions', () => ({
   getGroupById: jest.fn()
 }));
 
+jest.mock('next/navigation', () => ({
+  useRouter: jest.fn(),
+  usePathname: jest.fn(),
+}))
+
 const mockUser = {
   id: 'user_123',
   firstName: 'Juan',
