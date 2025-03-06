@@ -6,6 +6,7 @@ import groupPlaceholderImg from '../../../../public/assets/group-paceholder.jpeg
 import somethingWentWrong from '../../../../public/assets/something-went-wrong.svg'
 import { groupPageTestIds } from '@/utils/constants';
 import { GROUP_ERROR_MESSAGES, GROUP_ERRORS } from '@/lib/errors';
+import Header from '@/components/shared/Header';
 
 interface GroupPageProps {
   params: {
@@ -25,6 +26,7 @@ const Group = async ({ params }: GroupPageProps) => {
 
   return (
     <div data-testid={groupPageTestIds.groupPage} className='w-full min-h-dvh'>
+      <Header />
       {groupInfo.success && groupInfo.group ? (
         <div
           data-testid={groupPageTestIds.groupInfoDiv}

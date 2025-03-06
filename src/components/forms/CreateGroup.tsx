@@ -49,8 +49,6 @@ const CreateGroup = () => {
         userDisplayName: user.fullName ? user.fullName : "",
       });
 
-      if (result) console.log(result.group);
-
       if (result.success && result.group) {
         setOpen(false)
         form.reset();
