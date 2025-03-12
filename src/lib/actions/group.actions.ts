@@ -240,3 +240,48 @@ export async function updateGroupDetails({ groupId, userId, name }: UpdateGroupD
     }
   }
 }
+
+interface DeleteGroupParams {
+  groupId: string;
+  userId: string;
+}
+
+export async function deleteGroup({ groupId, userId }: DeleteGroupParams) {
+  try {
+    // Check if user is the owner of the group
+    const group  = await prisma.group.findUnique({
+      where: { id: groupId },
+      select: { ownerId: true },
+    });
+
+    if (!group) {
+      return {
+        success: false,
+        error: GROUP_ERRORS.NOT_FOUND
+      };
+    }
+
+    if (group.ownerId !== userId) {
+      return {
+        success: false,
+        error: GROUP_ERRORS.UNAUTHORIZED
+      };
+    }
+
+    await prisma.group.delete({
+      where: { id: groupId },
+    });
+
+    revalidatePath('/groups')
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Failed to delete group: ", error);
+    return {
+      success: false,
+      error: GROUP_ERRORS.DELETE_FAILED,
+    }
+  }
+}
