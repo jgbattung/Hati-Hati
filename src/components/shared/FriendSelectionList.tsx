@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { AvatarImage } from '@radix-ui/react-avatar';
 import { CheckIcon } from 'lucide-react';
+import { Button } from '../ui/button';
 
 interface FriendSelectItem {
   id: string;
@@ -72,7 +73,18 @@ const FriendSelectionList = ({ friends }: { friends: FriendSelectItem[] }) => {
           )}
           </div>
         ))}
+
       </div>
+      {selectedFriends.length > 0 && (
+        <div className='flex justify-end'>
+          <Button
+            className='bg-violet-600 hover:bg-violet-700 transition-all duration-300 ease-in-out 
+            transform scale-100 opacity-100 animate-in fade-in slide-in-from-bottom-5'
+          >
+            Add to group
+          </Button>
+        </div>
+      )}
     </div>
   )
 }
