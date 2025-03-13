@@ -37,7 +37,8 @@ export const GROUP_ERRORS = {
   UNAUTHORIZED: 'UNAUTHORIZED',
   FETCH_FAILED: 'FETCH_FAILED',
   GENERAL_ERROR: 'GENERAL_ERROR',
-  UPDATE_FAILED: 'UPDATE_FAILED,'
+  UPDATE_FAILED: 'UPDATE_FAILED,',
+  DELETE_FAILED: 'DELETE_FAILED',
 } as const
 
 export const GROUP_ERROR_MESSAGES = {
@@ -47,4 +48,5 @@ export const GROUP_ERROR_MESSAGES = {
   [GROUP_ERRORS.FETCH_FAILED]: "Faied to fetch user groups",
   [GROUP_ERRORS.GENERAL_ERROR]: "Something went wrong with this group",
   [GROUP_ERRORS.UPDATE_FAILED]: "Failed to update group",
+  [GROUP_ERRORS.DELETE_FAILED]: "Failed to delete group",
 } as const;

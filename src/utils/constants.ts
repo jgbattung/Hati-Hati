@@ -67,3 +67,11 @@ export const updateGroupNameTestIds = {
   cancelButton: "cancel-button",
   groupNameMessage: "group-name-message",
 }
+
+export const deleteGroupTestIds = {
+  deleteGroupButton: "delete-group-button",
+  deleteGroupDialog: "delete-grou-dialog",
+  dialogTitle: "dialog-title",
+  cancelButton: "cancel-button",
+  confirmDeleteButton: "confirm-delete-button",
+}
