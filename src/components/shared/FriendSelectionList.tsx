@@ -44,32 +44,35 @@ const FriendSelectionList = ({ friends }: { friends: FriendSelectItem[] }) => {
           </div>
         </div>
       )}
-      {friends.map((friend) => (
-        <div
-          key={friend.id}
-          onClick={() => toggleFriend(friend.id)}
-          className={`w-full flex items-center justify-between p-2 rounded-md cursor-pointer hover:bg-zinc-800/50 transition-colors`}
-        >
-          <div className='flex items-center justify-start gap-3'>
-            <Avatar className='h-9 w-9'>
-              <AvatarImage
-                src={friend.image ? friend.image : ""}
-              />
-              <AvatarFallback>US</AvatarFallback>
-            </Avatar>
-            <div className='flex flex-col text-xs'>
-              <p className="font-medium">{friend.name}</p>
-              <p className="text-zinc-400">@{friend.username}</p>
-            </div>
-          </div>
 
-          {selectedFriends.includes(friend.id) && (
-          <div className="text-teal-500">
-            <CheckIcon size={18} />
+      <div className='space-y-2 max-h-80 overflow-y-auto custom-scrollbar'>
+        {friends.map((friend) => (
+          <div
+            key={friend.id}
+            onClick={() => toggleFriend(friend.id)}
+            className={`w-full flex items-center justify-between p-2 rounded-md cursor-pointer hover:bg-zinc-800/50 transition-colors`}
+          >
+            <div className='flex items-center justify-start gap-3'>
+              <Avatar className='h-9 w-9'>
+                <AvatarImage
+                  src={friend.image ? friend.image : ""}
+                />
+                <AvatarFallback>US</AvatarFallback>
+              </Avatar>
+              <div className='flex flex-col text-xs'>
+                <p className="font-medium">{friend.name}</p>
+                <p className="text-zinc-400">@{friend.username}</p>
+              </div>
+            </div>
+
+            {selectedFriends.includes(friend.id) && (
+            <div className="text-teal-500">
+              <CheckIcon size={18} />
+            </div>
+          )}
           </div>
-        )}
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }
