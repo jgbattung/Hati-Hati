@@ -125,7 +125,6 @@ export async function addFriend({ email, currentUserId, currentUserName }: addFr
     if (process.env.NODE_ENV === 'development') {
       console.log('Development mode - Invitation link:', inviteLink);
       console.log('Invitation details:', {
-        inviteeName: name,
         inviterName: currentUserName,
         email: email
       });
@@ -135,7 +134,6 @@ export async function addFriend({ email, currentUserId, currentUserName }: addFr
         isExistingUser: false,
         invitation: {
           email,
-          name,
           token: invitation.token
         }
       }
