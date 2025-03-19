@@ -7,7 +7,6 @@ import { DialogDescription } from '@radix-ui/react-dialog'
 import { useLoadingStore } from '@/lib/store'
 import { redirect } from 'next/navigation'
 import { getUserFriends } from '@/lib/actions/user.actions'
-import { useUser } from '@clerk/nextjs'
 import FriendSelectionList from '../shared/FriendSelectionList'
 
 interface FriendItem {

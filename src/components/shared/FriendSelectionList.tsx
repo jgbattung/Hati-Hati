@@ -8,6 +8,7 @@ import { Button } from '../ui/button';
 import { useUser } from '@clerk/nextjs';
 import { useLoadingStore } from '@/lib/store';
 import { addMembersToGroup } from '@/lib/actions/group.actions';
+import { friendsSelectionListTestIds } from '@/utils/constants';
 
 interface FriendSelectItem {
   id: string;
@@ -27,6 +28,8 @@ const FriendSelectionList = ({ friends, groupId, onAddComplete }: FriendSelectio
   const [selectedFriends, setSelectedFriends] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const { isLoading, setIsLoading } = useLoadingStore();
+
+  console.log(friends)
 
   const toggleFriend = (friendId: string) => {
     setSelectedFriends(prev => 
@@ -69,43 +72,53 @@ const FriendSelectionList = ({ friends, groupId, onAddComplete }: FriendSelectio
   return (
     <div>
       {selectedFriendDetails.length > 0 && (
-        <div className="mb-4 pb-2 border-b border-zinc-600">
+        <div
+          data-testid={friendsSelectionListTestIds.selectedDiv} 
+          className="mb-4 pb-2 border-b border-zinc-600"
+        >
           <div className="flex flex-wrap gap-2">
             {selectedFriendDetails.map(friend => (
-              <div key={`selected-${friend.id}`} className="flex flex-col items-center">
-                <Avatar className="h-8 w-8">
+              <div
+                key={`selected-${friend.id}`}
+                className="flex flex-col items-center"
+              >
+                <Avatar data-testid={friendsSelectionListTestIds.selectedAvatar} className="h-8 w-8">
                   <AvatarImage src={friend.image || ""} />
                   <AvatarFallback>{friend.name[0]}</AvatarFallback>
                 </Avatar>
-                <span className="text-xs mt-1 text-center max-w-14 truncate">{friend.name.split(' ')[0]}</span>
+                <span data-testid={friendsSelectionListTestIds.selectedName} className="text-xs mt-1 text-center max-w-14 truncate">{friend.name.split(' ')[0]}</span>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      <div className='space-y-2 max-h-80 overflow-y-auto custom-scrollbar'>
+      <div
+        data-testid={friendsSelectionListTestIds.listDiv}
+        className='space-y-2 max-h-80 overflow-y-auto custom-scrollbar'
+      >
         {friends.map((friend) => (
           <div
+            data-testid={friendsSelectionListTestIds.friendDiv}
             key={friend.id}
             onClick={() => toggleFriend(friend.id)}
             className={`w-full flex items-center justify-between p-2 rounded-md cursor-pointer hover:bg-zinc-800/50 transition-colors`}
           >
             <div className='flex items-center justify-start gap-3'>
-              <Avatar className='h-9 w-9'>
+              <Avatar data-testid={friendsSelectionListTestIds.friendAvatar} className='h-9 w-9'>
                 <AvatarImage
                   src={friend.image ? friend.image : ""}
                 />
                 <AvatarFallback>US</AvatarFallback>
               </Avatar>
               <div className='flex flex-col text-xs'>
-                <p className="font-medium">{friend.name}</p>
-                <p className="text-zinc-400">@{friend.username}</p>
+                <p data-testid={friendsSelectionListTestIds.friendName} className="font-medium">{friend.name}</p>
+                <p data-testid={friendsSelectionListTestIds.friendUsername} className="text-zinc-400">@{friend.username}</p>
               </div>
             </div>
 
             {selectedFriends.includes(friend.id) && (
-            <div className="text-teal-500">
+            <div data-testid={friendsSelectionListTestIds.checkIcon} className="text-teal-500">
               <CheckIcon size={18} />
             </div>
           )}
@@ -117,6 +130,7 @@ const FriendSelectionList = ({ friends, groupId, onAddComplete }: FriendSelectio
         <div className='flex flex-col items-end'>
           {error && <p className="text-xs text-rose-500 mb-2">{error}</p>}
           <Button
+            data-testid={friendsSelectionListTestIds.addButton}
             type="button"
             onClick={handleAddToGroup}
             disabled={isLoading}
