@@ -39,6 +39,8 @@ export const GROUP_ERRORS = {
   GENERAL_ERROR: 'GENERAL_ERROR',
   UPDATE_FAILED: 'UPDATE_FAILED,',
   DELETE_FAILED: 'DELETE_FAILED',
+  ADD_MEMBER_FAILED: 'ADD_MEMBER_FAILED',
+  MEMBER_ALREADY_EXISTS: 'MEMBER_ALREADY_EXISTS',
 } as const
 
 export const GROUP_ERROR_MESSAGES = {
@@ -49,4 +51,6 @@ export const GROUP_ERROR_MESSAGES = {
   [GROUP_ERRORS.GENERAL_ERROR]: "Something went wrong with this group",
   [GROUP_ERRORS.UPDATE_FAILED]: "Failed to update group",
   [GROUP_ERRORS.DELETE_FAILED]: "Failed to delete group",
+  [GROUP_ERRORS.ADD_MEMBER_FAILED]: "Failed to add user to the group",
+  [GROUP_ERRORS.MEMBER_ALREADY_EXISTS]: "User is already in the group",
 } as const;
