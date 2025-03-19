@@ -17,12 +17,16 @@ interface FriendItem {
   image: string | null;
 }
 
-const AddGroupMember = ({ groupId }: { groupId: string }) => {
-  const { user } = useUser();
+interface AddGroupMemberParams {
+  groupId: string;
+  userId: string;
+}
+
+const AddGroupMember = ({ groupId, userId }: AddGroupMemberParams) => {
   const [open, setOpen] = useState(false)
   const [friends, setFriends] = useState<FriendItem[]>([]);  const { isLoading, setIsLoading } = useLoadingStore();
   
-  if (!user) redirect('sign-in');
+  if (!userId) redirect('sign-in');
 
   const handleAddComplete = () => {
     setOpen(false);
@@ -30,10 +34,10 @@ const AddGroupMember = ({ groupId }: { groupId: string }) => {
   
   useEffect(() => {
     async function fetchFriends() {
-      if (open && user) {
+      if (open && userId) {
         setIsLoading(true);
         try {
-          const friendsData = await getUserFriends(user.id);
+          const friendsData = await getUserFriends(userId);
 
           const formattedFriends = (friendsData || []).map(f => ({
             id: f.friend.id,
@@ -52,7 +56,7 @@ const AddGroupMember = ({ groupId }: { groupId: string }) => {
     }
 
     fetchFriends();
-  }, [open, user]);
+  }, [open, userId]);
   
   return (
     <Dialog open={open} onOpenChange={setOpen}>
