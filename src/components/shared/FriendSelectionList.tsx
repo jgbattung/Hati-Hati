@@ -5,6 +5,9 @@ import { Avatar, AvatarFallback } from '../ui/avatar';
 import { AvatarImage } from '@radix-ui/react-avatar';
 import { CheckIcon } from 'lucide-react';
 import { Button } from '../ui/button';
+import { useUser } from '@clerk/nextjs';
+import { useLoadingStore } from '@/lib/store';
+import { addMembersToGroup } from '@/lib/actions/group.actions';
 
 interface FriendSelectItem {
   id: string;
@@ -13,8 +16,17 @@ interface FriendSelectItem {
   image?: string | null;
 }
 
-const FriendSelectionList = ({ friends }: { friends: FriendSelectItem[] }) => {
-  const [selectedFriends, setSelectedFriends] = useState<string[]>([])
+interface FriendSelectionListProps {
+  friends: FriendSelectItem[];
+  groupId: string;
+  onAddComplete?: () => void;
+}
+
+const FriendSelectionList = ({ friends, groupId, onAddComplete }: FriendSelectionListProps) => {
+  const { user } = useUser();
+  const [selectedFriends, setSelectedFriends] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const { isLoading, setIsLoading } = useLoadingStore();
 
   const toggleFriend = (friendId: string) => {
     setSelectedFriends(prev => 
@@ -27,6 +39,32 @@ const FriendSelectionList = ({ friends }: { friends: FriendSelectItem[] }) => {
   const selectedFriendDetails = selectedFriends.map(id => 
     friends.find(friend => friend.id === id)
   ).filter(Boolean) as FriendSelectItem[];
+
+  const handleAddToGroup = async () => {
+    if (!user || selectedFriends.length === 0) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const result = await addMembersToGroup({
+        groupId,
+        memberIds: selectedFriends,
+        currentUserId: user.id,
+      });
+
+      if (result.success) {
+        if (onAddComplete) onAddComplete();
+      } else {
+        setError(result.error || "Failed to add members to group");
+      }
+    } catch (error) {
+      console.error("Error adding members:", error);
+      setError("An unexpected error occurred");
+    } finally {
+      setIsLoading(false)
+    }
+  };
 
   return (
     <div>
@@ -76,12 +114,16 @@ const FriendSelectionList = ({ friends }: { friends: FriendSelectItem[] }) => {
 
       </div>
       {selectedFriends.length > 0 && (
-        <div className='flex justify-end'>
+        <div className='flex flex-col items-end'>
+          {error && <p className="text-xs text-rose-500 mb-2">{error}</p>}
           <Button
+            type="button"
+            onClick={handleAddToGroup}
+            disabled={isLoading}
             className='bg-violet-600 hover:bg-violet-700 transition-all duration-300 ease-in-out 
             transform scale-100 opacity-100 animate-in fade-in slide-in-from-bottom-5'
           >
-            Add to group
+            {isLoading ? 'Adding...' : 'Add to group'}
           </Button>
         </div>
       )}

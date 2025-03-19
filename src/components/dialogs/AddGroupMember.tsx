@@ -17,12 +17,16 @@ interface FriendItem {
   image: string | null;
 }
 
-const AddGroupMember = () => {
+const AddGroupMember = ({ groupId }: { groupId: string }) => {
   const { user } = useUser();
   const [open, setOpen] = useState(false)
   const [friends, setFriends] = useState<FriendItem[]>([]);  const { isLoading, setIsLoading } = useLoadingStore();
   
   if (!user) redirect('sign-in');
+
+  const handleAddComplete = () => {
+    setOpen(false);
+  };
   
   useEffect(() => {
     async function fetchFriends() {
@@ -78,7 +82,11 @@ const AddGroupMember = () => {
             </div>
           ) : (
             <div className='w-full'>
-              <FriendSelectionList friends={friends} />
+              <FriendSelectionList
+                friends={friends}
+                groupId={groupId}
+                onAddComplete={handleAddComplete} 
+              />
             </div>
           )}
         </div>

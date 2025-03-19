@@ -61,7 +61,7 @@ const Group = async ({ params }: GroupPageProps) => {
           </div>
           <div className='w-full mt-6 flex flex-col items-center justify-center gap-4'>
             <p>{`You're the only one here`}</p>
-            <AddGroupMember />
+            <AddGroupMember groupId={groupInfo.group.id} />
           </div>
         </div>
       ) : (
