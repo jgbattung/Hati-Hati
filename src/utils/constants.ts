@@ -75,3 +75,25 @@ export const deleteGroupTestIds = {
   cancelButton: "cancel-button",
   confirmDeleteButton: "confirm-delete-button",
 }
+
+export const friendsSelectionListTestIds = {
+  listDiv: "friend-list-div",
+  selectedListDiv: "selected-list-div",
+  selectedDiv: "selected-div",
+  selectedName: "selected-name",
+  friendDiv: "friend-div",
+  friendAvatar: "friend-avatar",
+  friendName: "friend-name",
+  friendUsername: "friend-username",
+  checkIcon: "check-icon",
+  addButton: "add-button",
+}
+
+export const addGroupMemberTestIds = {
+  addGroupMemberButton: "add-group-member-button",
+  addGroupMemberDialog: "add-group-member-dialog",
+  dialogTitle: "dialog-title",
+  friendSelectionListDiv: "friend-selection-list-div",
+  noFriendsDiv: "no-friends-div",
+  loadingDiv: "loading-div",
+}

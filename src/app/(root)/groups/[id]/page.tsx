@@ -7,6 +7,7 @@ import somethingWentWrong from '../../../../public/assets/something-went-wrong.s
 import { groupPageTestIds } from '@/utils/constants';
 import { GROUP_ERROR_MESSAGES, GROUP_ERRORS } from '@/lib/errors';
 import Header from '@/components/shared/Header';
+import AddGroupMember from '@/components/dialogs/AddGroupMember';
 
 interface GroupPageProps {
   params: {
@@ -57,6 +58,10 @@ const Group = async ({ params }: GroupPageProps) => {
           <div className='mx-8 flex flex-col gap-3'>
             <p className='font-normal text-xl'>{groupInfo.group.name}</p>
             <p className='text-sm'>You are all settled up in this group.</p>
+          </div>
+          <div className='w-full mt-6 flex flex-col items-center justify-center gap-4'>
+            <p>{`You're the only one here`}</p>
+            <AddGroupMember groupId={groupInfo.group.id} userId={user.id} />
           </div>
         </div>
       ) : (

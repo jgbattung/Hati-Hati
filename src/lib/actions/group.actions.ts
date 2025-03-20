@@ -284,4 +284,101 @@ export async function deleteGroup({ groupId, userId }: DeleteGroupParams) {
       error: GROUP_ERRORS.DELETE_FAILED,
     }
   }
+};
+
+interface AddMembersToGroupParams {
+  groupId: string;
+  memberIds: string[];
+  currentUserId: string;
+}
+
+export async function addMembersToGroup({
+  groupId,
+  memberIds,
+  currentUserId
+}: AddMembersToGroupParams) {
+  try {
+    // Verify if the current user is a member of the group
+    const userMembership = await prisma.groupMember.findUnique({
+      where: {
+        groupId_userId: {
+          groupId,
+          userId: currentUserId,
+        }
+      }
+    });
+
+    if (!userMembership) {
+      return {
+        success: false,
+        error: GROUP_ERRORS.UNAUTHORIZED,
+      }
+    }
+
+    // Check for duplication
+    const existingMembers = await prisma.groupMember.findMany({
+      where: {
+        groupId,
+        userId: {
+          in: memberIds
+        }
+      },
+      select: {
+        userId: true,
+      }
+    });
+
+    const existingMemberIds = existingMembers.map((member) => member.userId);
+    const newMemberIds = memberIds.filter(id => !existingMemberIds.includes(id));
+
+    if (newMemberIds.length === 0) {
+      return {
+        success: false,
+        error: GROUP_ERRORS.MEMBER_ALREADY_EXISTS,
+      }
+    }
+
+    // Get user info for new members
+    const usersToAdd = await prisma.user.findMany({
+      where: {
+        id: {
+          in: newMemberIds,
+        }
+      },
+      select: {
+        id: true,
+        username: true,
+        name: true,
+      }
+    });
+
+    // Add the members
+    const createdMembers = await prisma.$transaction(
+      usersToAdd.map(user => 
+        prisma.groupMember.create({
+          data: {
+            groupId,
+            userId: user.id,
+            username: user.username,
+            displayName: user.name,
+            status: 'ACTIVE',
+          }
+        })
+      )
+    );
+
+    revalidatePath(`/groups/${groupId}`);
+
+    return {
+      success: true,
+      addedCount: createdMembers.length,
+      skippedCount: memberIds.length - createdMembers.length,
+    };
+  } catch (error) {
+    console.error("Failed to add members to the group: ", error)
+    return {
+      success: false,
+      error: GROUP_ERRORS.ADD_MEMBER_FAILED,
+    }
+  }
 }
