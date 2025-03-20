@@ -2,12 +2,14 @@
 
 import React, { useEffect, useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
-import { UserPlus } from 'lucide-react'
+import { UserPlus, UserRoundX } from 'lucide-react'
 import { DialogDescription } from '@radix-ui/react-dialog'
 import { useLoadingStore } from '@/lib/store'
 import { redirect } from 'next/navigation'
 import { getUserFriends } from '@/lib/actions/user.actions'
 import FriendSelectionList from '../shared/FriendSelectionList'
+import { Button } from '../ui/button'
+import Link from 'next/link'
 
 interface FriendItem {
   id: string;
@@ -85,11 +87,23 @@ const AddGroupMember = ({ groupId, userId }: AddGroupMemberParams) => {
             </div>
           ) : (
             <div className='w-full'>
-              <FriendSelectionList
-                friends={friends}
-                groupId={groupId}
-                onAddComplete={handleAddComplete} 
-              />
+              {friends.length > 0 ? (
+                <FriendSelectionList
+                  friends={friends}
+                  groupId={groupId}
+                  onAddComplete={handleAddComplete} 
+                />
+              ) : (
+                <div className='flex flex-col items-center justify-center gap-4 py-10'>
+                  <UserRoundX size={40} className="text-zinc-600" />
+                  <p className='text-zinc-400 text-center'>{`You don't have any friends to add yet.`}</p>
+                  <Link href="/friends" onClick={() => setOpen(false)}>
+                    <Button size="sm" variant="outline" className="mt-2">
+                      Add friends first
+                    </Button>
+                  </Link>
+              </div>
+              )}
             </div>
           )}
         </div>
