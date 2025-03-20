@@ -73,16 +73,17 @@ const FriendSelectionList = ({ friends, groupId, onAddComplete }: FriendSelectio
     <div>
       {selectedFriendDetails.length > 0 && (
         <div
-          data-testid={friendsSelectionListTestIds.selectedDiv} 
+          data-testid={friendsSelectionListTestIds.selectedListDiv} 
           className="mb-4 pb-2 border-b border-zinc-600"
         >
           <div className="flex flex-wrap gap-2">
             {selectedFriendDetails.map(friend => (
               <div
+                data-testid={friendsSelectionListTestIds.selectedDiv} 
                 key={`selected-${friend.id}`}
                 className="flex flex-col items-center"
               >
-                <Avatar data-testid={friendsSelectionListTestIds.selectedAvatar} className="h-8 w-8">
+                <Avatar className="h-8 w-8">
                   <AvatarImage src={friend.image || ""} />
                   <AvatarFallback>{friend.name[0]}</AvatarFallback>
                 </Avatar>

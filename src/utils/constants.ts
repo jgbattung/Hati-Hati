@@ -78,8 +78,8 @@ export const deleteGroupTestIds = {
 
 export const friendsSelectionListTestIds = {
   listDiv: "friend-list-div",
+  selectedListDiv: "selected-list-div",
   selectedDiv: "selected-div",
-  selectedAvatar: "selected-avatar",
   selectedName: "selected-name",
   friendDiv: "friend-div",
   friendAvatar: "friend-avatar",
