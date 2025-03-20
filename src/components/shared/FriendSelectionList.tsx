@@ -29,8 +29,6 @@ const FriendSelectionList = ({ friends, groupId, onAddComplete }: FriendSelectio
   const [error, setError] = useState<string | null>(null);
   const { isLoading, setIsLoading } = useLoadingStore();
 
-  console.log(friends)
-
   const toggleFriend = (friendId: string) => {
     setSelectedFriends(prev => 
       prev.includes(friendId) 
