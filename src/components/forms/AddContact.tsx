@@ -17,6 +17,7 @@ import ContactErrorMessage from "./form-error/ContactErrorMessage"
 import { addContactTestIds } from "@/utils/constants"
 import { UserRoundPlus } from "lucide-react"
 import { useLoadingStore } from "@/lib/store"
+import { addMembersToGroup } from "@/lib/actions/group.actions"
 
 interface AddContactProps {
   isOpen?: boolean;
@@ -75,7 +76,27 @@ const AddContact = ({ isOpen, onClose, groupId }: AddContactProps) => {
 
       if (!result.error && result.success) {
         if (result.isExistingUser && result.user) {
-          setSuccessMessage(`${result.user.name} has been added to your friends list.`);
+          let message = `${result.user.name} has been added to your friends list.`
+          
+          // if a groupId is passed, add the user to group as well
+          if (groupId && result.user.id) {
+            console.log('Add to group automatically')
+            try {
+              const groupResult = await addMembersToGroup({
+                groupId,
+                memberIds: [result.user.id],
+                currentUserId: user.id,
+              });
+
+              if (groupResult.success) {
+                message += ` They have also been added to the group.`
+              }
+            } catch (groupError) {
+              console.error("Error adding to group: ", groupError)
+            }
+          }
+
+          setSuccessMessage(message);
         }
 
         if (!result.isExistingUser && result.invitation) {

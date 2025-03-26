@@ -87,6 +87,7 @@ export async function addFriend({ email, currentUserId, currentUserName }: addFr
         success: true,
         isExistingUser: true,
         user: {
+          id: userToAdd.id,
           name: userToAdd.name,
           email: userToAdd.email,
         }
