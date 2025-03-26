@@ -18,7 +18,13 @@ import { addContactTestIds } from "@/utils/constants"
 import { UserRoundPlus } from "lucide-react"
 import { useLoadingStore } from "@/lib/store"
 
-const AddContact = () => {
+interface AddContactProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+  groupId?: string;
+}
+
+const AddContact = ({ isOpen, onClose, groupId }: AddContactProps) => {
   const { user } = useUser();
   const [open, setOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -35,13 +41,20 @@ const AddContact = () => {
   });
 
   const handleClose = useCallback(() => {
-    setOpen(false);
+    if (isOpen === undefined) {
+      setOpen(false);
+    }
+
+    if (onClose) {
+      onClose();
+    }
+
     setTimeout(() => {
       setShowSuccess(false);
       setSuccessMessage("");
       form.reset();
     }, 300)
-  }, [form]);
+  }, [form, onClose, isOpen]);
 
   const handleCancel = () => {
     setOpen(false);
@@ -89,16 +102,22 @@ const AddContact = () => {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          data-testid={addContactTestIds.addNewFriendButton}
-          className="flex items-center justify-center gap-3 border border-teal-500 text-teal-500  hover:bg-teal-500/10 transition-colors"
-        >
-          <UserRoundPlus />
-          Add more friends
-        </Button>
-      </DialogTrigger>
+    <Dialog 
+      open={isOpen !== undefined ? isOpen : open} 
+      onOpenChange={setOpen}
+    >
+      {isOpen === undefined && (
+        <DialogTrigger asChild>
+          <Button
+            data-testid={addContactTestIds.addNewFriendButton}
+            className="flex items-center justify-center gap-3 border border-teal-500 text-teal-500 hover:bg-teal-500/10 transition-colors"
+          >
+            <UserRoundPlus />
+            Add more friends
+          </Button>
+        </DialogTrigger>
+      )}
+
       {showSuccess ? (
         <ContactSuccessMessage message={successMessage} onClose={handleClose} />
       ) : showError ? (
@@ -106,7 +125,7 @@ const AddContact = () => {
       ) : (
         <DialogContent
           data-testid={addContactTestIds.addContactDialog}
-          className="max-sm:max-w-72 rounded-md border-2 border-zinc-600 [&>button:last-child]:hidden"
+          className="max-sm:max-w-72 rounded-md border-2 border-zinc-600 bg-zinc-900 [&>button:last-child]:hidden"
         >
           <DialogHeader
             className='flex flex-col items-center justify-center gap-3'
