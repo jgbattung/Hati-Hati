@@ -96,6 +96,9 @@ const FriendSelectionList = ({ friends, groupId, onAddComplete }: FriendSelectio
         data-testid={friendsSelectionListTestIds.listDiv}
         className='space-y-2 max-h-80 overflow-y-auto custom-scrollbar'
       >
+        <div className='py-1'>
+          <p className='text-xs'>Friends on Hati-Hati</p>
+        </div>
         {friends.map((friend) => (
           <div
             data-testid={friendsSelectionListTestIds.friendDiv}
