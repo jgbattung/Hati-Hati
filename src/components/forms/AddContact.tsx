@@ -57,8 +57,7 @@ const AddContact = ({ isOpen, onClose, groupId }: AddContactProps) => {
   }, [form, onClose, isOpen]);
 
   const handleCancel = () => {
-    setOpen(false);
-    form.reset();
+    handleClose();
   }
 
   const onSubmit = async (values: z.infer<typeof ContactValidation>) => {
@@ -104,7 +103,13 @@ const AddContact = ({ isOpen, onClose, groupId }: AddContactProps) => {
   return (
     <Dialog 
       open={isOpen !== undefined ? isOpen : open} 
-      onOpenChange={setOpen}
+      onOpenChange={(newOpen) => {
+        if (!newOpen) {
+          handleClose();
+        } else if (isOpen === undefined) {
+          setOpen(true);
+        }
+      }}
     >
       {isOpen === undefined && (
         <DialogTrigger asChild>
