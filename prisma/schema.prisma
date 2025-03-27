@@ -59,11 +59,14 @@ model Invitation {
   status InvitationStatus @default(PENDING)
   expiresAt DateTime
   createdAt DateTime @default(now())
+  groupId String? 
 
   sender User @relation("SentInvites", fields: [invitedBy], references: [id], onDelete: Cascade)
+  group Group? @relation(fields: [groupId], references: [id], onDelete: SetNull)
 
   @@index([email])
   @@index([token])
+  @@index([groupId])
 }
 
 model Group {
@@ -76,6 +79,8 @@ model Group {
 
   owner User @relation("OwnedGroups", fields: [ownerId], references: [id])
   members GroupMember[]
+
+  invitations Invitation[]
 }
 
 model GroupMember {
