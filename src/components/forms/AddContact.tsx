@@ -58,6 +58,7 @@ const AddContact = ({ isOpen, onClose, groupId }: AddContactProps) => {
   }, [form, onClose, isOpen]);
 
   const handleCancel = () => {
+    form.reset();
     handleClose();
   }
 
@@ -70,6 +71,7 @@ const AddContact = ({ isOpen, onClose, groupId }: AddContactProps) => {
         email: values.email,
         currentUserId: user.id,
         currentUserName: user.firstName!,
+        groupId: groupId,
       });
 
       if(result) console.log('EMAIL SENT')
@@ -100,7 +102,7 @@ const AddContact = ({ isOpen, onClose, groupId }: AddContactProps) => {
         }
 
         if (!result.isExistingUser && result.invitation) {
-          setSuccessMessage(`Invitation email has been sent to ${result.invitation.name}. They will automatically be added to your friends list when they sign up.`)
+          setSuccessMessage(`Invitation email has been sent. They will automatically be added to your friends list when they sign up.`)
         }
 
         setShowSuccess(true);

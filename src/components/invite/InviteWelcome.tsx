@@ -11,16 +11,18 @@ interface InviteWelcomeProps {
   inviterName: string;
   token: string;
   email: string;
+  groupId?: string | null;
 }
 
-const InviteWelcome = ({ inviterName, token, email }: InviteWelcomeProps) => {
+const InviteWelcome = ({ inviterName, token, email, groupId }: InviteWelcomeProps) => {
   useEffect(() => {
     sessionStorage.setItem('inviteData', JSON.stringify({
       token,
       email,
       inviterName,
+      groupId: groupId || null,
     }));
-  }, [token, email, inviterName]);
+  }, [token, email, inviterName, groupId]);
 
   return (
     <div 

@@ -3,11 +3,13 @@ import React from 'react'
 interface InvitationEmailProps {
   inviterName: string;
   inviteLink: string;
+  groupInvite?: boolean;
 }
 
 const InvitationEmail: React.FC<Readonly<InvitationEmailProps>> = ({
   inviterName,
   inviteLink,
+  groupInvite = false,
 }) => {
   return (
     <div style={{
@@ -44,7 +46,10 @@ const InvitationEmail: React.FC<Readonly<InvitationEmailProps>> = ({
           marginBottom: '24px',
           lineHeight: '1.5',
         }}>
-          {inviterName} has invited you to join Hati-hati, an expense sharing app that makes it easy to split bills and track shared expenses.
+          {groupInvite 
+            ? `${inviterName} has invited you to join a group in Hati-hati, an expense sharing app that makes it easy to split bills and track shared expenses.`
+            : `${inviterName} has invited you to join Hati-hati, an expense sharing app that makes it easy to split bills and track shared expenses.`
+          }
         </p>
 
         <a

@@ -30,6 +30,7 @@ const InvitePage = async ({ params }: InvitePageProps) => {
         inviterName={result.invitation.invitedBy!}
         token={params.token}
         email={result.invitation.email!}
+        groupId={result.invitation.groupId ? result.invitation.groupId : null}
       />
     </div>
   )
