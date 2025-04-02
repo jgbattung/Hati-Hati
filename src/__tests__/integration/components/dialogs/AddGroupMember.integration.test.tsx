@@ -1,10 +1,11 @@
 import AddGroupMember from "@/components/dialogs/AddGroupMember";
 import { getUserFriends } from "@/lib/actions/user.actions";
 import { useLoadingStore } from "@/lib/store";
-import { addGroupMemberTestIds, friendsSelectionListTestIds } from "@/utils/constants";
+import { addContactTestIds, addGroupMemberTestIds, friendsSelectionListTestIds } from "@/utils/constants";
 import { useUser } from "@clerk/nextjs";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import React from "react";
 
 jest.mock("@/lib/actions/user.actions", () => ({
   getUserFriends: jest.fn(),
@@ -25,6 +26,13 @@ jest.mock("@clerk/nextjs", () => ({
 jest.mock("next/navigation", () => ({
   redirect: jest.fn(),
 }));
+
+jest.mock("@/components/forms/AddContact", () => {
+  const MockAddContact = jest.fn(({ isOpen }) => 
+    isOpen ? <div data-testid="add-contact-dialog">Mock AddContact Dialog</div> : null
+  );
+  return { __esModule: true, default: MockAddContact };
+});
 
 const mockUser = {
   id: 'user_123',
@@ -148,4 +156,42 @@ describe("Add Group Member dialog tests", () => {
       expect(screen.getByTestId(addGroupMemberTestIds.noFriendsDiv)).toBeInTheDocument();
     })
   });
-});
+
+  it("should display the add a new friend button", async () => {
+    const user = userEvent.setup();
+
+    renderAddGroupMember();
+
+    await user.click(screen.getByTestId(addGroupMemberTestIds.addGroupMemberButton));
+
+    expect(screen.getByTestId(addGroupMemberTestIds.addNewFriend)).toBeInTheDocument();
+  });
+
+  it("should open the Add Contact dialog when add a new friend button is clicked", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const AddContact = require("@/components/forms/AddContact").default;
+
+    const user = userEvent.setup();
+
+    renderAddGroupMember();
+
+    await user.click(screen.getByTestId(addGroupMemberTestIds.addGroupMemberButton));
+
+    expect(AddContact).not.toHaveBeenCalledWith(
+      expect.objectContaining({ isOpen: true }),
+      expect.anything(),
+    )
+
+    await user.click(screen.getByTestId(addGroupMemberTestIds.addNewFriend));
+
+    expect(AddContact).toHaveBeenCalledWith(
+      expect.objectContaining({
+        isOpen: true,
+        groupId: "group_123"
+      }),
+      expect.anything(),
+    );
+
+    expect(screen.getByTestId(addContactTestIds.addContactDialog)).toBeInTheDocument();
+  });
+});;

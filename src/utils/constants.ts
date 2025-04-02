@@ -96,4 +96,5 @@ export const addGroupMemberTestIds = {
   friendSelectionListDiv: "friend-selection-list-div",
   noFriendsDiv: "no-friends-div",
   loadingDiv: "loading-div",
+  addNewFriend: "add-new-friend",
 }

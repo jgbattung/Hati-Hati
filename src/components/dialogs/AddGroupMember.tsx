@@ -99,6 +99,7 @@ const AddGroupMember = ({ groupId, userId }: AddGroupMemberParams) => {
           </DialogHeader>
           <div className='hover:bg-zinc-800/50 p-3 rounded-md'>
             <button
+              data-testid={addGroupMemberTestIds.addNewFriend}
               className='flex items-center justify-start gap-5'
               onClick={handleOpenAddContact}
             >
