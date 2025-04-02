@@ -105,7 +105,7 @@ describe("Add Contact success scenarios tests", () => {
     // Verify success message
     await waitFor(() => {
       expect(screen.getByTestId(addContactTestIds.successDialog)).toBeInTheDocument();
-      expect(screen.getByText('Invitation email has been sent to New User. They will automatically be added to your friends list when they sign up.')).toBeInTheDocument();
+      expect(screen.getByText('Invitation email has been sent. They will automatically be added to your friends list when they sign up.')).toBeInTheDocument();
     });
 
     // Verify if addFriend was called with the correct parameters
