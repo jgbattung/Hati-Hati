@@ -4,6 +4,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import AddContact from '@/components/forms/AddContact';
 import userEvent from '@testing-library/user-event';
 import { addContactTestIds } from '@/utils/constants';
+import { addMembersToGroup } from '@/lib/actions/group.actions';
 
 // Mock the clerk hook
 jest.mock('@clerk/nextjs', () => ({
@@ -13,6 +14,17 @@ jest.mock('@clerk/nextjs', () => ({
 // Mock the addFriend action
 jest.mock('@/lib/actions/user.actions', () => ({
   addFriend: jest.fn()
+}));
+
+jest.mock('@/lib/actions/group.actions', () => ({
+  addMembersToGroup: jest.fn()
+}));
+
+jest.mock('@/lib/store', () => ({
+  useLoadingStore: () => ({
+    isLoading: false,
+    setIsLoading: jest.fn()
+  })
 }));
 
 beforeEach(() => {
@@ -29,11 +41,97 @@ const mockUser = {
   firstName: 'Test',
 }
 
-const renderAddContact = () => {
-  render(<AddContact />);
-} 
+const mockGroupId = 'group_123';
+
+const mockExistingUser = {
+  success: true,
+  isExistingUser: true,
+  user: {
+    id: 'user_098',
+    name: 'Juan Cruz',
+    email: 'jaun@example.com',
+  }
+};
+
+const mockGroupResult = {
+  success: true,
+  addedCount: 1,
+  skippedCount: 0,
+};
+
+const renderAddContact = (props = {}) => {
+  render(<AddContact {...props} />);
+}
 
 describe("Add Contact success scenarios tests", () => {
+  it('should pass groupId to addFriend when adding a new user', async () => {
+    const mockInvitation = {
+      success: true,
+      isExistingUser: false,
+      invitation: {
+        email: 'new@email.com',
+        name: 'New User',
+        token: 'abc_123',
+      }
+    };
+    (addFriend as jest.Mock).mockResolvedValue(mockInvitation);
+
+    const user = userEvent.setup();
+
+    renderAddContact({ isOpen: true, groupId: mockGroupId });
+
+    const emailField = screen.getByLabelText('Email');
+    await user.type(emailField, 'new@email.com');
+
+    await user.click(screen.getByTestId(addContactTestIds.submitButton));
+
+    expect(addFriend).toHaveBeenCalledWith({
+      email: 'new@email.com',
+      currentUserId: mockUser.id,
+      currentUserName: mockUser.firstName,
+      groupId: mockGroupId,
+    });
+  });
+
+  it('should call addMembersToGroup when adding an existing user with groupId', async () => {
+    (addFriend as jest.Mock).mockResolvedValue(mockExistingUser);
+    (addMembersToGroup as jest.Mock).mockResolvedValue(mockGroupResult);
+
+    const user = userEvent.setup();
+
+    renderAddContact({ isOpen: true, groupId: mockGroupId });
+
+    const emailField = screen.getByLabelText('Email');
+    await user.type(emailField, 'juan@example.com');
+
+    await userEvent.click(screen.getByTestId(addContactTestIds.submitButton));
+
+    await waitFor(() => {
+      expect(addMembersToGroup).toHaveBeenCalledWith({
+        groupId: mockGroupId,
+        memberIds: ['user_098'],
+        currentUserId: mockUser.id,
+      });
+    });
+  });
+
+  it('should show enhanced success message when user is also added to the group', async () => {
+    const user = userEvent.setup();
+    
+    renderAddContact({ isOpen: true, groupId: mockGroupId });
+
+    const emailField = screen.getByLabelText('Email');
+    await user.type(emailField, 'juan@example.com');
+
+    await user.click(screen.getByTestId(addContactTestIds.submitButton));
+
+    await waitFor(() => {
+      expect(screen.getByTestId(addContactTestIds.successDialog)).toBeInTheDocument();
+      expect(screen.getByText(/Juan Cruz has been added to your friends list/)).toBeInTheDocument();
+      expect(screen.getByText(/They have also been added to the group/)).toBeInTheDocument();
+    });
+  });
+
   it('should show the correct success message when adding an existing user', async () => {
     const mockExistingUser = {
       success: true,
