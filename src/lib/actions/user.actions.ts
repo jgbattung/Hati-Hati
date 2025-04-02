@@ -34,10 +34,11 @@ export interface addFriendsParams {
   email: string,
   currentUserId: string,
   currentUserName: string,
+  groupId?: string,
 }
 
 
-export async function addFriend({ email, currentUserId, currentUserName }: addFriendsParams) {
+export async function addFriend({ email, currentUserId, currentUserName, groupId }: addFriendsParams) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -87,6 +88,7 @@ export async function addFriend({ email, currentUserId, currentUserName }: addFr
         success: true,
         isExistingUser: true,
         user: {
+          id: userToAdd.id,
           name: userToAdd.name,
           email: userToAdd.email,
         }
@@ -116,6 +118,7 @@ export async function addFriend({ email, currentUserId, currentUserName }: addFr
         invitedBy: currentUserId,
         token,
         expiresAt,
+        groupId: groupId || null,
       }
     });
 
@@ -126,7 +129,8 @@ export async function addFriend({ email, currentUserId, currentUserName }: addFr
       console.log('Development mode - Invitation link:', inviteLink);
       console.log('Invitation details:', {
         inviterName: currentUserName,
-        email: email
+        email: email,
+        groupId: groupId,
       });
       
       return {
@@ -143,10 +147,13 @@ export async function addFriend({ email, currentUserId, currentUserName }: addFr
       const { error } = await resend.emails.send({
         from: 'Hati-Hati <onboarding@resend.dev>',
         to: [email],
-        subject: `${currentUserName} invited you to join Hati-Hati`,
+        subject: groupId 
+          ? `${currentUserName} invited you to join a group in Hati-Hati` 
+          : `${currentUserName} invited you to join Hati-Hati`,
         react: InvitationEmail({
           inviterName: currentUserName,
-          inviteLink
+          inviteLink,
+          groupInvite: !!groupId
         })
       });
 
@@ -172,8 +179,8 @@ export async function addFriend({ email, currentUserId, currentUserName }: addFr
       isExistingUser: false,
       invitation: {
         email,
-        name,
-        token: invitation.token
+        token: invitation.token,
+        groupId: groupId || null,
       }
     }
   } catch (error) {
@@ -241,7 +248,8 @@ export async function validateInviteToken(token: string) {
       success: true,
       invitation: {
         email: invitation.email,
-        invitedBy: invitation.sender.name
+        invitedBy: invitation.sender.name,
+        groupId: invitation.groupId || null,
       }
     }
   } catch (error) {
@@ -258,6 +266,7 @@ interface AcceptInvitationParams {
 
 interface AcceptInvitationSuccess {
   success: true;
+  groupId: string | null;
 }
 
 interface AcceptInvitationError {
@@ -307,6 +316,25 @@ export async function acceptInvitation({
         }
       });
 
+      // Add to group if invited via groups page
+      if (invitation.groupId) {
+        const newUser = await tx.user.findUnique({
+          where: { id },
+          select: { username: true, name: true }
+        });
+
+        // Create group membership
+        await tx.groupMember.create({
+          data: {
+            groupId: invitation.groupId,
+            userId: id,
+            username: newUser!.username,
+            displayName: newUser!.name,
+            status: 'ACTIVE',
+          }
+        });
+      }
+
       await tx.invitation.update({
         where: { id: invitation.id },
         data: {
@@ -315,7 +343,12 @@ export async function acceptInvitation({
       });
     });
 
-    return { success: true };
+    revalidatePath('/groups')
+
+    return {
+      success: true,
+      groupId: invitation.groupId || null,
+    };
 
   } catch (error) {
     console.error('Error accepting invitation: ', error);

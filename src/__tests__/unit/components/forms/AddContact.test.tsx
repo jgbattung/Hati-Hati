@@ -18,8 +18,27 @@ jest.mock('@clerk/nextjs', () => ({
   })
 }));
 
-const renderAddContact = () => {
-  render(<AddContact />)
+jest.mock('@/lib/actions/user.actions', () => ({
+  addFriend: jest.fn()
+}));
+
+jest.mock('@/lib/actions/group.actions', () => ({
+  addMembersToGroup: jest.fn()
+}));
+
+jest.mock('@/lib/store', () => ({
+  useLoadingStore: () => ({
+    isLoading: false,
+    setIsLoading: jest.fn()
+  })
+}));
+
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
+const renderAddContact = (props = {}) => {
+  render(<AddContact {...props} />)
 };
 
 describe("Add Contacts Dialog tests", () => {
@@ -28,6 +47,19 @@ describe("Add Contacts Dialog tests", () => {
     expect(screen.getByTestId(addContactTestIds.addNewFriendButton)).toBeInTheDocument();
   });
 
+  it('should not render the add friend button when isOpen is provided]', () => {
+    renderAddContact({ isOpen: false });
+    expect(screen.queryByTestId(addContactTestIds.addNewFriendButton)).not.toBeInTheDocument();
+  });
+
+  it ('should render the dialog content when isOpen is true', () => {
+    renderAddContact({ isOpen: true });
+
+    expect(screen.getByTestId(addContactTestIds.addContactDialog)).toBeInTheDocument();
+    expect(screen.getByTestId(addContactTestIds.dialogTitle)).toHaveTextContent('Add a new contact')
+    expect(screen.getByTestId(addContactTestIds.dialogDescription)).toHaveTextContent('Add a new contact to Hati-Hati to add them to your groups.')
+  });
+;
   it('should render dialog content when trigger is clicked', () => {
     renderAddContact();
 
@@ -52,6 +84,16 @@ describe("Add Contacts Dialog tests", () => {
     // Check buttons
     expect(screen.getByTestId(addContactTestIds.submitButton)).toBeInTheDocument();
     expect(screen.getByTestId(addContactTestIds.cancelButton)).toBeInTheDocument();
+  });
+
+  it('should call the onClose callback when dialog is closed', () => {
+    const onCloseMock = jest.fn();
+    renderAddContact({ isOpen: true, onClose: onCloseMock });
+
+    const cancelButton = screen.getByTestId(addContactTestIds.cancelButton);
+    fireEvent.click(cancelButton);
+
+    expect(onCloseMock).toHaveBeenCalled();
   });
 
   describe("Form validation tests", () => {

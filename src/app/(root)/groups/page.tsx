@@ -39,64 +39,66 @@ const Groups = async () => {
       userId: user.id,
     });
 
-    if (userGroups.groups?.length === 0) {
-      return (
-        <div
-          data-testid={groupsPageTestIds.noGroupsDiv}
-          className='w-full min-h-dvh relative pb-20 py-10 px-4 flex flex-col items-center justify-center gap-4'
-        >
-          <Users size={64} className="text-zinc-600" />
-          <h3 className="text-xl font-medium">No groups yet</h3>
-          <p className="text-zinc-400 text-sm text-center mt-4">
-            Create your first group to start tracking shared expenses with friends.
-          </p>
-          <div className='fixed bottom-24 right-4 z-10'>
-            <CreateGroup />
-          </div>
-        </div>
-      )
-    }
+    const hasGroups = userGroups.groups && userGroups.groups.length > 0;
 
     return (
-      <div
-        data-testid={groupsPageTestIds.groupsPage}
-        className='w-full min-h-dvh relative pb-20 py-10 px-4'
-      >
-        <InvitationHandler />
-        <div className='w-full flex flex-col items-start justify-center gap-4'>
-          {userGroups.groups?.map((group) => (
-            <Link
-              key={group.id}
-              href={`/groups/${group.id}`}
-            >
-              <div
-                data-testid={groupsPageTestIds.groupsDiv}
-                className='flex gap-4 items-center justify-center'
+      <>
+        <div
+          data-testid={groupsPageTestIds.groupsPage}
+          className='w-full min-h-dvh relative pb-20 py-10 px-4'
+        >
+          <InvitationHandler />
+          {!hasGroups ? (
+            <div
+                data-testid={groupsPageTestIds.noGroupsDiv}
+                className='w-full min-h-dvh relative pb-20 py-10 px-4 flex flex-col items-center justify-center gap-4'
               >
-                <div>
-                  <Image
-                    src={imagePlaceholder}
-                    alt="group image"
-                    width={90}
-                    height={90}
-                    className='object-cover min-w-24 max-w-24 min-h-20 max-h-20 rounded-xl'
-                  />
-                </div>
-                <div className='flex flex-col'>
-                  <p className='font-semibold'>{group.name}</p>
-                  <p className='text-zinc-400'>settled up</p>
-                </div>
+              <Users size={64} className="text-zinc-600" />
+              <h3 className="text-xl font-medium">No groups yet</h3>
+              <p className="text-zinc-400 text-sm text-center mt-4">
+                Create your first group to start tracking shared expenses with friends.
+              </p>
+              <div className='fixed bottom-24 right-4 z-10'>
+                <CreateGroup />
               </div>
-            </Link>
-          ))}
+            </div>
+          ) : (
+            <div className='w-full flex flex-col items-start justify-center gap-4'>
+              {userGroups.groups?.map((group) => (
+                <Link
+                  key={group.id}
+                  href={`/groups/${group.id}`}
+                >
+                  <div
+                    data-testid={groupsPageTestIds.groupsDiv}
+                    className='flex gap-4 items-center justify-center'
+                  >
+                    <div>
+                      <Image
+                        src={imagePlaceholder}
+                        alt="group image"
+                        width={90}
+                        height={90}
+                        className='object-cover min-w-24 max-w-24 min-h-20 max-h-20 rounded-xl'
+                      />
+                    </div>
+                    <div className='flex flex-col'>
+                      <p className='font-semibold'>{group.name}</p>
+                      <p className='text-zinc-400'>settled up</p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
+
         <div className='fixed bottom-24 right-4 z-10'>
           <CreateGroup />
         </div>
-      </div>
-    )
+      </>
+    );
   }
-  return null
 }
 
 export default Groups

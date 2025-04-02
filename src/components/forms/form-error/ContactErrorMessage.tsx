@@ -13,7 +13,7 @@ const ContactErrorMessage = ({ message, onClose }: ContactErrorMessageProps) => 
   return (
     <DialogContent
       data-testid={addContactTestIds.errorDialog}
-      className="flex flex-col items-center justify-center max-sm:max-w-72 rounded-md border-2 border-zinc-600 [&>button:last-child]:hidden"
+      className="flex flex-col items-center justify-center max-sm:max-w-72 rounded-md border-2 bg-zinc-900 border-zinc-600 [&>button:last-child]:hidden"
     >
     <CircleX
       size={60}

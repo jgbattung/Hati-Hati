@@ -17,8 +17,15 @@ import ContactErrorMessage from "./form-error/ContactErrorMessage"
 import { addContactTestIds } from "@/utils/constants"
 import { UserRoundPlus } from "lucide-react"
 import { useLoadingStore } from "@/lib/store"
+import { addMembersToGroup } from "@/lib/actions/group.actions"
 
-const AddContact = () => {
+interface AddContactProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+  groupId?: string;
+}
+
+const AddContact = ({ isOpen, onClose, groupId }: AddContactProps) => {
   const { user } = useUser();
   const [open, setOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -35,17 +42,24 @@ const AddContact = () => {
   });
 
   const handleClose = useCallback(() => {
-    setOpen(false);
+    if (isOpen === undefined) {
+      setOpen(false);
+    }
+
+    if (onClose) {
+      onClose();
+    }
+
     setTimeout(() => {
       setShowSuccess(false);
       setSuccessMessage("");
       form.reset();
     }, 300)
-  }, [form]);
+  }, [form, onClose, isOpen]);
 
   const handleCancel = () => {
-    setOpen(false);
     form.reset();
+    handleClose();
   }
 
   const onSubmit = async (values: z.infer<typeof ContactValidation>) => {
@@ -57,17 +71,38 @@ const AddContact = () => {
         email: values.email,
         currentUserId: user.id,
         currentUserName: user.firstName!,
+        groupId: groupId,
       });
 
       if(result) console.log('EMAIL SENT')
 
       if (!result.error && result.success) {
         if (result.isExistingUser && result.user) {
-          setSuccessMessage(`${result.user.name} has been added to your friends list.`);
+          let message = `${result.user.name} has been added to your friends list.`
+          
+          // if a groupId is passed, add the user to group as well
+          if (groupId && result.user.id) {
+            console.log('Add to group automatically')
+            try {
+              const groupResult = await addMembersToGroup({
+                groupId,
+                memberIds: [result.user.id],
+                currentUserId: user.id,
+              });
+
+              if (groupResult.success) {
+                message += ` They have also been added to the group.`
+              }
+            } catch (groupError) {
+              console.error("Error adding to group: ", groupError)
+            }
+          }
+
+          setSuccessMessage(message);
         }
 
         if (!result.isExistingUser && result.invitation) {
-          setSuccessMessage(`Invitation email has been sent to ${result.invitation.name}. They will automatically be added to your friends list when they sign up.`)
+          setSuccessMessage(`Invitation email has been sent. They will automatically be added to your friends list when they sign up.`)
         }
 
         setShowSuccess(true);
@@ -89,16 +124,28 @@ const AddContact = () => {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          data-testid={addContactTestIds.addNewFriendButton}
-          className="flex items-center justify-center gap-3 border border-teal-500 text-teal-500  hover:bg-teal-500/10 transition-colors"
-        >
-          <UserRoundPlus />
-          Add more friends
-        </Button>
-      </DialogTrigger>
+    <Dialog 
+      open={isOpen !== undefined ? isOpen : open} 
+      onOpenChange={(newOpen) => {
+        if (!newOpen) {
+          handleClose();
+        } else if (isOpen === undefined) {
+          setOpen(true);
+        }
+      }}
+    >
+      {isOpen === undefined && (
+        <DialogTrigger asChild>
+          <Button
+            data-testid={addContactTestIds.addNewFriendButton}
+            className="flex items-center justify-center gap-3 border border-teal-500 text-teal-500 hover:bg-teal-500/10 transition-colors"
+          >
+            <UserRoundPlus />
+            Add more friends
+          </Button>
+        </DialogTrigger>
+      )}
+
       {showSuccess ? (
         <ContactSuccessMessage message={successMessage} onClose={handleClose} />
       ) : showError ? (
@@ -106,7 +153,7 @@ const AddContact = () => {
       ) : (
         <DialogContent
           data-testid={addContactTestIds.addContactDialog}
-          className="max-sm:max-w-72 rounded-md border-2 border-zinc-600 [&>button:last-child]:hidden"
+          className="max-sm:max-w-72 rounded-md border-2 border-zinc-600 bg-zinc-900 [&>button:last-child]:hidden"
         >
           <DialogHeader
             className='flex flex-col items-center justify-center gap-3'

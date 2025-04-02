@@ -40,7 +40,7 @@ const DeleteGroup = ({ groupId }: DeleteGroupProps) => {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <button
-          data-testId={deleteGroupTestIds.deleteGroupButton}
+          data-testid={deleteGroupTestIds.deleteGroupButton}
           className='flex items-center justify-start gap-5 text-rose-600 hover:text-rose-700'
         >
           <Trash

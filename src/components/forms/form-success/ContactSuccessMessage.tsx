@@ -13,7 +13,7 @@ const ContactSuccessMessage = ({ message, onClose }: ContactSuccessMessageProps)
   return (
     <DialogContent
       data-testid={addContactTestIds.successDialog}
-      className="flex flex-col items-center justify-center max-sm:max-w-72 rounded-md border-2 border-zinc-600 [&>button:last-child]:hidden"
+      className="flex flex-col items-center justify-center max-sm:max-w-72 rounded-md border-2 bg-zinc-900 border-zinc-600 [&>button:last-child]:hidden"
     >
       <CheckCircle2
         size={60}
