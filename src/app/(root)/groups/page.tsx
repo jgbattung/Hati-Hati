@@ -10,7 +10,6 @@ import React from 'react'
 import imagePlaceholder from '../../../public/assets/group-paceholder.jpeg'
 import { Users } from 'lucide-react';
 import { groupsPageTestIds } from '@/utils/constants';
-import { SignOutButton } from '@clerk/nextjs';
 
 const Groups = async () => {
   const user = await currentUser();
