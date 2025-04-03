@@ -24,10 +24,12 @@ const Settings = async ({ params }: SettingsProps) => {
     userId: user.id!,
   });
 
+  const headerTitle = 'Group settings'
+
   if (!groupInfo.success || !groupInfo.group) {
     return (
       <div className='w-full min-h-dvh flex flex-col items-center justify-center px-5'>
-        <Header />
+        <Header headerTitle={headerTitle} />
         <div className='flex flex-col items-center justify-center'>
           <Image 
               src={somethingWentWrong}
@@ -46,7 +48,7 @@ const Settings = async ({ params }: SettingsProps) => {
 
   return (
     <div className='w-full min-h-dvh'>
-      <Header />
+      <Header headerTitle={headerTitle} />
       <div className='w-full flex flex-col items-center justify-center pt-14'>
         <div className='w-full flex items-center justify-between px-4'>
           <div className='flex items-center justify-center gap-2'>

@@ -15,8 +15,11 @@ jest.mock('@/lib/actions/group.actions', () => ({
 }));
 
 jest.mock('next/navigation', () => ({
-  useRouter: jest.fn(),
-  usePathname: jest.fn(),
+  useRouter: jest.fn(() => ({
+    back: jest.fn(),
+    push: jest.fn()
+  })),
+  usePathname: jest.fn(() => '/groups/group_123'),
 }))
 
 const mockUser = {
