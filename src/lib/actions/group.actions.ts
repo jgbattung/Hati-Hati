@@ -74,6 +74,7 @@ export async function getGroupById({ groupId, userId }: GetGroupByIdParams) {
                   username: true,
                   name: true,
                   image: true,
+                  email: true,
                 }
               }
             }

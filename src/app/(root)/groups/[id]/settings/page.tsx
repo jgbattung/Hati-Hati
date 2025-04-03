@@ -7,6 +7,7 @@ import somethingWentWrong from '../../../../../public/assets/something-went-wron
 import groupPlaceholderImg from '../../../../../public/assets/group-paceholder.jpeg'
 import UpdateGroupName from '@/components/forms/UpdateGroupName';
 import DeleteGroup from '@/components/alert-dialogs/DeleteGroup';
+import GroupMembers from '@/components/shared/GroupMembers';
 
 interface SettingsProps {
   params: {
@@ -68,9 +69,8 @@ const Settings = async ({ params }: SettingsProps) => {
       </div>
       <div className="w-full border-t border-zinc-700 mt-1 mb-3" />
       <div className='flex flex-col items-start justify-center gap-5 px-4 py-2'>
-        <div>
-          <p className='text-xs'>Group Members</p>
-
+        <div className='w-full'>
+          <GroupMembers users={groupInfo.group.members} />
         </div>
         <div className='flex flex-col items-start justify-center gap-3'>
           <p className='text-xs'>Advanced Settings</p>
