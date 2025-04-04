@@ -1,5 +1,6 @@
 import React from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { groupMemberTestIds } from '@/utils/constants';
 
 interface UserInfo {
   id: string;
@@ -24,7 +25,7 @@ const GroupMembers = ({ users }: GroupMemberProps) => {
   console.log('users from gm: ', users)
 
   return (
-    <div className='flex flex-col gap-2 w-full'>
+    <div data-testid={groupMemberTestIds.groupMembersDiv} className='flex flex-col gap-2 w-full'>
       <div className='mb-2'>
         <p className='text-xs'>Group Members</p>
       </div>
@@ -32,6 +33,7 @@ const GroupMembers = ({ users }: GroupMemberProps) => {
         {activeUsers.map((member) => (
           <div
             key={member.id}
+            data-testid={groupMemberTestIds.memberDiv}
             className='flex items-center justify-start gap-3'
           >
             <Avatar className="h-10 w-10">

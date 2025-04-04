@@ -98,3 +98,8 @@ export const addGroupMemberTestIds = {
   loadingDiv: "loading-div",
   addNewFriend: "add-new-friend",
 }
+
+export const groupMemberTestIds = {
+  groupMembersDiv: "group-members-div",
+  memberDiv: "member-div",
+}
