@@ -24,13 +24,9 @@ interface GroupMemberProps {
 
 const GroupMembers = ({ users }: GroupMemberProps) => {
   const activeUsers = users.filter(user => user.status === 'ACTIVE');
-  console.log('users from gm: ', users)
 
   return (
     <div data-testid={groupMemberTestIds.groupMembersDiv} className='flex flex-col gap-2 w-full'>
-      <div className='mb-2'>
-        <p className='text-xs'>Group Members</p>
-      </div>
       <div className='flex flex-col gap-5'>
         {activeUsers.map((member) => (
           <div
