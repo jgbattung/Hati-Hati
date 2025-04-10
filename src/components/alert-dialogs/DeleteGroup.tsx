@@ -52,7 +52,7 @@ const DeleteGroup = ({ groupId }: DeleteGroupProps) => {
       </AlertDialogTrigger>
       <AlertDialogContent
         data-testid={deleteGroupTestIds.deleteGroupDialog}
-        className='flex flex-col items-center justify-center max-sm:max-w-72 rounded-md'
+        className='flex flex-col items-center justify-center max-sm:max-w-72 rounded-md bg-zinc-900'
       >
         <AlertDialogHeader className='text-left flex flex-col gap-3'>
           <AlertDialogTitle data-testid={deleteGroupTestIds.dialogTitle} className='text-lg font-bold'>Delete group?</AlertDialogTitle>
