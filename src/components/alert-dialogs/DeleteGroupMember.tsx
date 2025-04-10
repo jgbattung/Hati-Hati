@@ -8,6 +8,7 @@ import { useUser } from "@clerk/nextjs";
 import { removeGroupMember } from "@/lib/actions/group.actions";
 import { useState } from "react";
 import { GROUP_ERROR_MESSAGES } from "@/lib/errors";
+import { deleteGroupMemberTestIds } from "@/utils/constants";
 
 interface DeleteGroupMemberProps {
   groupId: string;
@@ -51,7 +52,10 @@ const DeleteGroupMember = ({ groupId, memberId }: DeleteGroupMemberProps) => {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <button className="text-rose-600 hover:text-rose-700 transition-colors">
+        <button
+          data-testid={deleteGroupMemberTestIds.deleteMemberButton}
+          className="text-rose-600 hover:text-rose-700 transition-colors"
+        >
           <SquareArrowRight
             strokeWidth={1.5}
             size={24}
@@ -59,10 +63,11 @@ const DeleteGroupMember = ({ groupId, memberId }: DeleteGroupMemberProps) => {
         </button>
       </AlertDialogTrigger>
       <AlertDialogContent
+        data-testid={deleteGroupMemberTestIds.deleteMemberDialog}
         className='flex flex-col items-center justify-center max-sm:max-w-72 rounded-md bg-zinc-900'
       >
         <AlertDialogHeader className="text-left flex flex-col gap-3">
-          <AlertDialogTitle className="text-lg font-bold">Remove member?</AlertDialogTitle>
+          <AlertDialogTitle data-testid={deleteGroupMemberTestIds.dialogTitle} className="text-lg font-bold">Remove member?</AlertDialogTitle>
           <AlertDialogDescription className="text-sm">
             Are you sure you want to remove this person from this group?
             {error && (
@@ -71,8 +76,9 @@ const DeleteGroupMember = ({ groupId, memberId }: DeleteGroupMemberProps) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className='w-full mt-3'>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel data-testid={deleteGroupMemberTestIds.cancelButton}>Cancel</AlertDialogCancel>
           <AlertDialogAction
+            data-testid={deleteGroupMemberTestIds.confirmButton}
             disabled={isLoading}
             onClick={handleRemove}
             className="rounded-md bg-rose-800 hover:bg-rose-900 transition-colors"

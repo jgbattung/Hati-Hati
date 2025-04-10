@@ -103,3 +103,11 @@ export const groupMemberTestIds = {
   groupMembersDiv: "group-members-div",
   memberDiv: "member-div",
 }
+
+export const deleteGroupMemberTestIds = {
+  deleteMemberButton: "delete-member-button",
+  deleteMemberDialog: "delete-member-dialog",
+  dialogTitle: "dialog-title",
+  confirmButton: "confirm-button",
+  cancelButton: "cancel-button",
+}

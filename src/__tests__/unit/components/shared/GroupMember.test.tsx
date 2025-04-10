@@ -1,10 +1,29 @@
 import GroupMembers from "@/components/shared/GroupMembers";
-import { groupMemberTestIds } from "@/utils/constants";
+import { deleteGroupMemberTestIds, groupMemberTestIds } from "@/utils/constants";
+import { useUser } from "@clerk/nextjs";
 import { render, screen } from "@testing-library/react";
+
+jest.mock("@clerk/nextjs", () => ({
+  useUser: jest.fn(),
+}));
+
+jest.mock('next/navigation', () => ({
+  useRouter: jest.fn(() => ({
+    push: jest.fn()
+  })),
+}));
+
+const mockUser = {
+  id: 'user_999',
+  firstName: 'Joe',
+  lastName: 'Rizz',
+  username: 'jrizz',
+};
 
 const mockUsers = [
   {
     id: 'id_123',
+    groupId: 'group_123',
     status: 'ACTIVE',
     user: {
       id: 'user_123',
@@ -16,6 +35,7 @@ const mockUsers = [
   },
   {
     id: 'id_456',
+    groupId: 'group_123',
     status: 'ACTIVE',
     user: {
       id: 'user_456',
@@ -27,6 +47,7 @@ const mockUsers = [
   },
   {
     id: 'id_789',
+    groupId: 'group_123', 
     status: 'ACTIVE',
     user: {
       id: 'user_789',
@@ -38,6 +59,7 @@ const mockUsers = [
   },
   {
     id: 'id_101',
+    groupId: 'group_123',
     status: 'LEFT',
     user: {
       id: 'user_101',
@@ -48,6 +70,12 @@ const mockUsers = [
     }
   }
 ];
+
+beforeEach(() => {
+  jest.clearAllMocks();
+
+  (useUser as jest.Mock).mockReturnValue({ user: mockUser });
+})
 
 const renderGroupMember = () => {
   render(<GroupMembers users={mockUsers} />)
@@ -71,5 +99,13 @@ describe("GroupMember tests", () => {
       expect(screen.getByText(`(${user.user.username})`)).toBeInTheDocument();
       expect(screen.getByText(user.user.email)).toBeInTheDocument();
     })
+  });
+
+  it("should display the delete group member button", () => {
+    const activeUsers = mockUsers.filter(user => user.status === 'ACTIVE');
+
+    renderGroupMember();
+
+    expect(screen.queryAllByTestId(deleteGroupMemberTestIds.deleteMemberButton)).toHaveLength(activeUsers.length);
   });
 });
