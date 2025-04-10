@@ -41,6 +41,9 @@ export const GROUP_ERRORS = {
   DELETE_FAILED: 'DELETE_FAILED',
   ADD_MEMBER_FAILED: 'ADD_MEMBER_FAILED',
   MEMBER_ALREADY_EXISTS: 'MEMBER_ALREADY_EXISTS',
+  REMOVE_MEMBER_FAILED: 'REMOVE_MEMBER_FAILED',
+  MEMBER_NOT_FOUND: 'MEMBER_NOT_FOUND',
+  CANNOT_REMOVE_OWNER: 'CANNOT_REMOVE_OWNER',
 } as const
 
 export const GROUP_ERROR_MESSAGES = {
@@ -53,4 +56,7 @@ export const GROUP_ERROR_MESSAGES = {
   [GROUP_ERRORS.DELETE_FAILED]: "Failed to delete group",
   [GROUP_ERRORS.ADD_MEMBER_FAILED]: "Failed to add user to the group",
   [GROUP_ERRORS.MEMBER_ALREADY_EXISTS]: "User is already in the group",
+  [GROUP_ERRORS.REMOVE_MEMBER_FAILED]: "Failed to remove member from the group",
+  [GROUP_ERRORS.MEMBER_NOT_FOUND]: "Cannot find member in the group",
+  [GROUP_ERRORS.CANNOT_REMOVE_OWNER]: "Group owner cannot be removed from the group",
 } as const;
