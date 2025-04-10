@@ -7,7 +7,6 @@ import { SquareArrowRight } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { removeGroupMember } from "@/lib/actions/group.actions";
 import { useState } from "react";
-import { GROUP_ERROR_MESSAGES } from "@/lib/errors";
 import { deleteGroupMemberTestIds } from "@/utils/constants";
 
 interface DeleteGroupMemberProps {
@@ -18,7 +17,6 @@ interface DeleteGroupMemberProps {
 const DeleteGroupMember = ({ groupId, memberId }: DeleteGroupMemberProps) => {
   const { user } = useUser();
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const { isLoading, setIsLoading } = useLoadingStore();
   const router = useRouter();
 
@@ -37,12 +35,9 @@ const DeleteGroupMember = ({ groupId, memberId }: DeleteGroupMemberProps) => {
         if (memberId === user.id) {
           router.push('/groups');
         }
-      } else if (result.error) {
-        setError(GROUP_ERROR_MESSAGES[result.error] || "Failed to remove member");
       }
     } catch (error) {
       console.error("Error removing user from the group: ", error);
-      setError("An unexpected error occurred");
     } finally {
       setOpen(false);
       setIsLoading(false);
@@ -70,9 +65,6 @@ const DeleteGroupMember = ({ groupId, memberId }: DeleteGroupMemberProps) => {
           <AlertDialogTitle data-testid={deleteGroupMemberTestIds.dialogTitle} className="text-lg font-bold">Remove member?</AlertDialogTitle>
           <AlertDialogDescription className="text-sm">
             Are you sure you want to remove this person from this group?
-            {error && (
-              <p className="text-rose-500 mt-2">{error}</p>
-            )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className='w-full mt-3'>
