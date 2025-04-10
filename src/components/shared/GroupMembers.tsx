@@ -1,6 +1,7 @@
 import React from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { groupMemberTestIds } from '@/utils/constants';
+import DeleteGroupMember from '../alert-dialogs/DeleteGroupMember';
 
 interface UserInfo {
   id: string;
@@ -12,6 +13,7 @@ interface UserInfo {
 
 interface GroupMember {
   id: string;
+  groupId: string;
   status: string;
   user: UserInfo;
 }
@@ -34,15 +36,20 @@ const GroupMembers = ({ users }: GroupMemberProps) => {
           <div
             key={member.id}
             data-testid={groupMemberTestIds.memberDiv}
-            className='flex items-center justify-start gap-3'
+            className='flex items-center justify-between gap-3'
           >
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={member.user.image || ""} />
-              <AvatarFallback>{member.user.username[0]}</AvatarFallback>
-            </Avatar>
-            <div className='flex flex-col items-start justify-start'>
-              <p className='text-sm'>{member.user.name}<span className='font-light'> ({member.user.username})</span></p>
-              <p className='text-xs text-zinc-400'>{member.user.email}</p>
+            <div className='flex items-center justify-start gap-3'>
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={member.user.image || ""} />
+                <AvatarFallback>{member.user.username[0]}</AvatarFallback>
+              </Avatar>
+              <div className='flex flex-col items-start justify-start'>
+                <p className='text-sm'>{member.user.name}<span className='font-light'> ({member.user.username})</span></p>
+                <p className='text-xs text-zinc-400'>{member.user.email}</p>
+              </div>
+            </div>
+            <div className='flex items-center justify-center'>
+              <DeleteGroupMember groupId={member.groupId} memberId={member.user.id} />
             </div>
           </div>
         ))}
