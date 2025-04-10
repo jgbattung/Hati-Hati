@@ -317,19 +317,20 @@ export async function addMembersToGroup({
     }
 
     // Check for duplication
-    const existingMembers = await prisma.groupMember.findMany({
+    const existingActiveMembers  = await prisma.groupMember.findMany({
       where: {
         groupId,
         userId: {
           in: memberIds
-        }
+        },
+         status: 'ACTIVE',
       },
       select: {
         userId: true,
       }
     });
 
-    const existingMemberIds = existingMembers.map((member) => member.userId);
+    const existingMemberIds = existingActiveMembers.map((member) => member.userId);
     const newMemberIds = memberIds.filter(id => !existingMemberIds.includes(id));
 
     if (newMemberIds.length === 0) {
@@ -356,8 +357,18 @@ export async function addMembersToGroup({
     // Add the members
     const createdMembers = await prisma.$transaction(
       usersToAdd.map(user => 
-        prisma.groupMember.create({
-          data: {
+        prisma.groupMember.upsert({
+          where: {
+            groupId_userId: {
+              groupId,
+              userId: user.id,
+            }
+          },
+          update: {
+            status: 'ACTIVE',
+            leftAt: null,
+          },
+          create: {
             groupId,
             userId: user.id,
             username: user.username,
