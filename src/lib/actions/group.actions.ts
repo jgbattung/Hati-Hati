@@ -383,3 +383,94 @@ export async function addMembersToGroup({
     }
   }
 }
+
+interface RemoveGroupMemberParams {
+  groupId: string;
+  memberId: string;
+  currentUserId: string;
+}
+
+export async function removeGroupMember({
+  groupId,
+  memberId,
+  currentUserId
+}: RemoveGroupMemberParams) {
+  try {
+    // Check if the current user is a member of the group
+    const currentUserMembership = await prisma.groupMember.findUnique({
+      where: {
+        groupId_userId: {
+          groupId,
+          userId: currentUserId,
+        }
+      },
+      select: { status: true }
+    });
+
+    if (!currentUserMembership || currentUserMembership.status !== 'ACTIVE') {
+      return {
+        success: false,
+        error: GROUP_ERRORS.UNAUTHORIZED,
+      };
+    }
+
+    const memberToRemove = await prisma.groupMember.findUnique({
+      where: {
+        groupId_userId: {
+          groupId,
+          userId: memberId,
+        }
+      }
+    });
+
+    if (!memberToRemove || memberToRemove.status !== 'ACTIVE') {
+      return {
+        success: false,
+        error: GROUP_ERRORS.MEMBER_NOT_FOUND,
+      };
+    }
+
+    const group = await prisma.group.findUnique({
+      where: { id: groupId },
+      select: { ownerId: true }
+    });
+
+    if (!group) {
+      return {
+        success: false,
+        error: GROUP_ERRORS.NOT_FOUND,
+      };
+    }
+    
+    if (memberId === group.ownerId) {
+      return {
+        success: false,
+        error: GROUP_ERRORS.CANNOT_REMOVE_OWNER,
+      };
+    }
+
+    const updateMember = await prisma.groupMember.update({
+      where: { 
+        id: memberToRemove.id
+       },
+       data: {
+        status: 'LEFT',
+        leftAt: new Date()
+       }
+    });
+
+    revalidatePath(`/groups/${groupId}`);
+    revalidatePath(`/groups/${groupId}/settings`);
+
+    return {
+      success: true,
+      member: updateMember
+    };
+  } catch (error) {
+    console.error("Failed to remove group member: ", error);
+    return {
+      success: false,
+      error: GROUP_ERRORS.REMOVE_MEMBER_FAILED,
+    }
+  }
+}
