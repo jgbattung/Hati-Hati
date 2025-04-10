@@ -23,9 +23,10 @@ interface FriendItem {
 interface AddGroupMemberParams {
   groupId: string;
   userId: string;
+  variant?: 'centered' | 'left-aligned';
 }
 
-const AddGroupMember = ({ groupId, userId }: AddGroupMemberParams) => {
+const AddGroupMember = ({ groupId, userId, variant = 'centered' }: AddGroupMemberParams) => {
   const [open, setOpen] = useState(false)
   const [friends, setFriends] = useState<FriendItem[]>([]);  const { isLoading, setIsLoading } = useLoadingStore();
   const [showAddContact, setShowAddContact] = useState(false);
@@ -70,6 +71,14 @@ const AddGroupMember = ({ groupId, userId }: AddGroupMemberParams) => {
 
     fetchFriends();
   }, [open, userId]);
+
+  const buttonStyles = variant === 'centered' 
+  ? 'flex items-center justify-center gap-6 px-5 py-6 text-teal-200'
+  : 'flex items-center justify-start gap-6 px-3 py-3 text-teal-200 w-full';
+
+  const buttonSize = variant === 'centered'
+  ? 'absolute bg-teal-200 rounded-full h-8 w-8'
+  : 'absolute bg-teal-200 rounded-full h-10 w-10'
   
   return (
     <>
@@ -80,10 +89,10 @@ const AddGroupMember = ({ groupId, userId }: AddGroupMemberParams) => {
         <DialogTrigger asChild>
           <button
             data-testid={addGroupMemberTestIds.addGroupMemberButton}
-            className='flex items-center justify-center gap-6 px-5 py-6 text-teal-200'
+            className={buttonStyles}
           >
             <div className='relative flex items-center justify-center'>
-              <div className='absolute bg-teal-200 rounded-full h-8 w-8'></div>
+              <div className={buttonSize}></div>
               <UserPlus size={16} color='#18181b' fill='#18181b' className='z-10' />
             </div>
             <p>Add group members</p>
