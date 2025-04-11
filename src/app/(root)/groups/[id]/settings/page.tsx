@@ -9,6 +9,7 @@ import UpdateGroupName from '@/components/forms/UpdateGroupName';
 import DeleteGroup from '@/components/alert-dialogs/DeleteGroup';
 import GroupMembers from '@/components/shared/GroupMembers';
 import AddGroupMember from '@/components/dialogs/AddGroupMember';
+import LeaveGroup from '@/components/alert-dialogs/LeaveGroup';
 
 interface SettingsProps {
   params: {
@@ -70,16 +71,17 @@ const Settings = async ({ params }: SettingsProps) => {
       </div>
       <div className="w-full border-t border-zinc-700 mt-1 mb-3" />
       <div className='flex flex-col items-start justify-center gap-5 px-4 py-2'>
-        <div className='w-full flex flex-col gap-3'>
+        <div className='w-full flex flex-col gap-3 mb-3'>
           <div className='mb-2'>
-            <p className='text-xs'>Group Members</p>
+            <p className='text-xs'>Group members</p>
           </div>
           <AddGroupMember groupId={groupInfo.group.id} userId={user.id} variant='left-aligned'/>
           <GroupMembers users={groupInfo.group.members} />
         </div>
-        <div className='flex flex-col items-start justify-center gap-3'>
-          <p className='text-xs'>Advanced Settings</p>
-          <p className='text-sm'>Leave Group</p>
+        <div className='flex flex-col items-start justify-center gap-5'>
+          <div>
+            <LeaveGroup groupId={groupInfo.group.id} />
+          </div>
           <div>
             <DeleteGroup groupId={groupInfo.group.id} />
           </div>
